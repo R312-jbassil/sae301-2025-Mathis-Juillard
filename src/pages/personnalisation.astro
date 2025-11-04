@@ -9,37 +9,39 @@ import Layout from '../layouts/Layout.astro';
       <div class="grid grid-cols-2 min-h-screen">
         
         <!-- Colonne gauche : Preview fixe -->
-        <div class="bg-base-200 flex flex-col justify-between sticky top-0 h-screen p-16">
-          <!-- SVG Preview -->
-          <div class="flex-1 flex items-center justify-center" style="perspective: 1200px;">
-            <div id="glassPreview" class="w-full max-w-[480px] transition-transform duration-500" style="transform-style: preserve-3d;">
-              <div id="svgContainer"></div>
+        <div class="bg-base-200 flex flex-col justify-between sticky top-0 h-screen p-12">
+          <!-- SVG Preview + Rotation -->
+          <div class="flex-1 flex flex-col justify-center items-center">
+            <div class="w-full max-w-[480px] mb-8" style="perspective: 1200px;">
+              <div id="glassPreview" class="transition-transform duration-500" style="transform-style: preserve-3d;">
+                <div id="svgContainer"></div>
+              </div>
+            </div>
+
+            <!-- Slider rotation -->
+            <div class="w-full max-w-[480px]">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-manrope font-medium text-base-content">Rotation</span>
+                <span class="text-xs font-manrope font-semibold text-primary"><span id="rotationAngle">0</span>°</span>
+              </div>
+              <input 
+                type="range" 
+                min="-180" 
+                max="180" 
+                value="0"
+                step="5"
+                class="range range-primary range-sm w-full" 
+                id="rotationSlider"
+              />
             </div>
           </div>
 
-          <!-- Signature / Slogan -->
-          <div class="w-[380px] ml-auto mr-12 mb-6">
-            <p class="font-playfair text-[18px] italic text-base-content/80 leading-relaxed">
+          <!-- Citation décalée en bas -->
+          <div class="w-[320px] ml-auto mr-8">
+            <p class="font-playfair text-[16px] italic text-base-content/70 leading-relaxed text-right">
               Votre regard,<br/>
-              <span class="font-bold text-secondary text-[20px]">VOTRE CRÉATION</span>
+              <span class="font-bold text-secondary text-[18px] not-italic">VOTRE CRÉATION</span>
             </p>
-          </div>
-
-          <!-- Slider rotation -->
-          <div class="w-full max-w-[560px] mx-auto">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-manrope font-medium text-base-content">Rotation</span>
-              <span class="text-xs font-manrope font-semibold text-primary"><span id="rotationAngle">0</span>°</span>
-            </div>
-            <input 
-              type="range" 
-              min="-180" 
-              max="180" 
-              value="0"
-              step="5"
-              class="range range-primary range-sm w-full" 
-              id="rotationSlider"
-            />
           </div>
         </div>
 
@@ -54,13 +56,13 @@ import Layout from '../layouts/Layout.astro';
             <!-- Formulaire -->
             <div class="space-y-7">
               
-              <!-- Matériau -->
+              <!-- Matériau de la monture -->
               <div>
                 <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
-                  Matériau
+                  Matériau de la monture
                 </h3>
                 <div class="relative">
-                  <select class="select select-bordered w-full font-manrope text-sm rounded-lg bg-base-100 pr-10" id="material">
+                  <select class="select select-bordered w-full font-manrope text-sm rounded-lg bg-base-100 pr-10" id="frameMaterial">
                     <option value="acetate">Acétate</option>
                     <option value="metal">Métal</option>
                     <option value="titane">Titane</option>
@@ -87,6 +89,21 @@ import Layout from '../layouts/Layout.astro';
                   <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #C19A6B" data-color="#C19A6B" data-target="frame"></button>
                   <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #704214" data-color="#704214" data-target="frame"></button>
                   <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #A9A9A9" data-color="#A9A9A9" data-target="frame"></button>
+                </div>
+              </div>
+
+              <!-- Matériau des branches -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Matériau des branches
+                </h3>
+                <div class="relative">
+                  <select class="select select-bordered w-full font-manrope text-sm rounded-lg bg-base-100 pr-10" id="templeMaterial">
+                    <option value="acetate">Acétate</option>
+                    <option value="metal">Métal</option>
+                    <option value="titane">Titane</option>
+                    <option value="bois">Bois</option>
+                  </select>
                 </div>
               </div>
 
@@ -284,9 +301,9 @@ import Layout from '../layouts/Layout.astro';
   }
 
   function applyInitialColors() {
-    updateSVGColors('frame', currentFrameColor);
-    updateSVGColors('temple', currentTempleColor);
-    updateSVGColors('lens', currentLensColor);
+    updateSVGColors('frame', '#2D2926');
+    updateSVGColors('temple', '#2D2926');
+    updateSVGColors('lens', '#ABC4A1');
   }
 
   function updateSVGColors(target: string, color: string) {
@@ -320,7 +337,7 @@ import Layout from '../layouts/Layout.astro';
   const glassPreview = document.getElementById('glassPreview');
 
   rotationSlider?.addEventListener('input', () => {
-    rotationAngle = parseInt(rotationSlider.value);
+    const rotationAngle = parseInt(rotationSlider.value);
     if (glassPreview) glassPreview.style.transform = `rotateY(${rotationAngle}deg)`;
     if (rotationDisplay) rotationDisplay.textContent = rotationAngle.toString();
   });
@@ -335,10 +352,6 @@ import Layout from '../layouts/Layout.astro';
         b.classList.remove('ring-2', 'ring-primary', 'ring-offset-1');
       });
       btn.classList.add('ring-2', 'ring-primary', 'ring-offset-1');
-      
-      if (target === 'frame') currentFrameColor = color;
-      else if (target === 'temple') currentTempleColor = color;
-      else if (target === 'lens') currentLensColor = color;
       
       updateSVGColors(target, color);
     });
