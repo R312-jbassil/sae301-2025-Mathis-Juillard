@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Panier - TaVue">
+  <div class="container mx-auto px-6 lg:px-12 py-12">
+    <h1 class="text-4xl font-playfair font-bold text-primary mb-12">
+      Votre panier
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Liste des produits -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Produit 1 -->
+        <div class="card bg-base-100 shadow-lg rounded-2xl">
+          <div class="card-body p-6">
+            <div class="flex flex-col sm:flex-row gap-6">
+              <!-- Image -->
+              <div class="bg-base-200 rounded-xl p-6 w-full sm:w-40 h-32 flex items-center justify-center flex-shrink-0">
+                <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
+              </div>
+
+              <!-- Détails -->
+              <div class="flex-1">
+                <h3 class="text-xl font-playfair font-semibold text-primary mb-2">
+                  Épure Classique
+                </h3>
+                <div class="text-sm text-base-content/70 space-y-1 mb-4">
+                  <p>Monture : Acétate noir</p>
+                  <p>Branches : Bois de noyer</p>
+                  <p>Pont : 18mm | Verres : 52mm</p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <button class="btn btn-sm btn-circle btn-outline">-</button>
+                    <span class="font-semibold">1</span>
+                    <button class="btn btn-sm btn-circle btn-outline">+</button>
+                  </div>
+                  <p class="text-xl font-bold text-primary">249€</p>
+                </div>
+              </div>
+
+              <!-- Bouton supprimer -->
+              <button class="btn btn-ghost btn-sm btn-circle self-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Produit 2 -->
+        <div class="card bg-base-100 shadow-lg rounded-2xl">
+          <div class="card-body p-6">
+            <div class="flex flex-col sm:flex-row gap-6">
+              <!-- Image -->
+              <div class="bg-base-200 rounded-xl p-6 w-full sm:w-40 h-32 flex items-center justify-center flex-shrink-0">
+                <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
+              </div>
+
+              <!-- Détails -->
+              <div class="flex-1">
+                <h3 class="text-xl font-playfair font-semibold text-primary mb-2">
+                  Moderne Doré
+                </h3>
+                <div class="text-sm text-base-content/70 space-y-1 mb-4">
+                  <p>Monture : Métal doré</p>
+                  <p>Branches : Acétate beige</p>
+                  <p>Pont : 16mm | Verres : 50mm</p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <button class="btn btn-sm btn-circle btn-outline">-</button>
+                    <span class="font-semibold">1</span>
+                    <button class="btn btn-sm btn-circle btn-outline">+</button>
+                  </div>
+                  <p class="text-xl font-bold text-primary">279€</p>
+                </div>
+              </div>
+
+              <!-- Bouton supprimer -->
+              <button class="btn btn-ghost btn-sm btn-circle self-start">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bouton continuer les achats -->
+        <a href="/personnalisation" class="btn btn-outline w-full rounded-lg">
+          Continuer mes achats
+        </a>
+      </div>
+
+      <!-- Résumé de commande -->
+      <div class="lg:col-span-1">
+        <div class="card bg-base-100 shadow-xl rounded-2xl sticky top-24">
+          <div class="card-body p-6">
+            <h2 class="text-2xl font-playfair font-bold text-primary mb-6">
+              Résumé
+            </h2>
+
+            <div class="space-y-4 mb-6">
+              <div class="flex justify-between text-base-content/70">
+                <span>Sous-total</span>
+                <span class="font-semibold">528€</span>
+              </div>
+              <div class="flex justify-between text-base-content/70">
+                <span>Livraison</span>
+                <span class="font-semibold">Gratuite</span>
+              </div>
+              <div class="divider my-2"></div>
+              <div class="flex justify-between text-xl font-bold text-primary">
+                <span>Total</span>
+                <span>528€</span>
+              </div>
+            </div>
+
+            <button class="btn btn-primary w-full rounded-lg mb-4">
+              Commander
+            </button>
+
+            <!-- Avantages -->
+            <div class="space-y-3 text-sm text-base-content/70">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Livraison gratuite</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Garantie 2 ans</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-success" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Retour sous 30 jours</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

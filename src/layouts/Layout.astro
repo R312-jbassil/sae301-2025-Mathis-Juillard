@@ -26,7 +26,7 @@ const currentPath = Astro.url.pathname;
       <nav class="container mx-auto px-6 lg:px-12 py-5">
         <div class="flex items-center justify-between">
           <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <img src="logo.webp" alt="TaVue Logo" class="h-8 w-auto" />
+            <img src="/logo.webp" alt="TaVue Logo" class="h-8 w-auto" />
           </a>
           
           <ul class="hidden md:flex items-center gap-10">
@@ -48,18 +48,20 @@ const currentPath = Astro.url.pathname;
             </li>
             <li>
               <a 
-                href="/panier" 
-                class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/panier' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
-              >
-                Panier
-              </a>
-            </li>
-            <li>
-              <a 
                 href="/connexion" 
                 class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/connexion' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
               >
                 Mon compte
+              </a>
+            </li>
+            <li>
+              <a href="/panier" class="btn btn-ghost btn-circle relative" id="cartButton">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span id="cartCount" class="hidden absolute -top-1 -right-1 bg-error text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-bounce">
+                  0
+                </span>
               </a>
             </li>
           </ul>
@@ -85,7 +87,7 @@ const currentPath = Astro.url.pathname;
         <div class="flex flex-col md:flex-row items-center justify-between gap-8">
           <div class="text-center md:text-left">
             <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <img src="logo.webp" alt="TaVue Logo" class="h-6 w-auto" />
+              <img src="/logo.webp" alt="TaVue Logo" class="h-6 w-auto" />
             </a>
           </div>
           
@@ -100,5 +102,24 @@ const currentPath = Astro.url.pathname;
         </div>
       </div>
     </footer>
+
+    <script>
+      // Gestion du compteur panier
+      document.addEventListener('cart:updated', ((e: CustomEvent) => {
+        const cartCount = document.getElementById('cartCount');
+        const count = e.detail.count;
+        
+        if (cartCount) {
+          if (count > 0) {
+            cartCount.textContent = count.toString();
+            cartCount.classList.remove('hidden');
+            cartCount.classList.add('animate-bounce');
+            setTimeout(() => cartCount.classList.remove('animate-bounce'), 1000);
+          } else {
+            cartCount.classList.add('hidden');
+          }
+        }
+      }) as EventListener);
+    </script>
   </body>
 </html>

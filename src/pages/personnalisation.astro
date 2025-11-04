@@ -3,170 +3,201 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Personnalisation - TaVue">
-  <div class="container mx-auto px-6 lg:px-12 py-12">
-    <!-- Titre de la page -->
-    <div class="mb-12">
-      <h1 class="text-4xl lg:text-5xl font-playfair font-bold text-primary mb-4">
-        Configurateur de lunettes
-      </h1>
-      <p class="text-base-content/70 text-lg">
-        Créez votre paire unique en personnalisant chaque détail.
-      </p>
-    </div>
-
-    <!-- Grille principale : Preview + Formulaire -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-      
-      <!-- Colonne gauche : Aperçu SVG -->
-      <div class="bg-base-200 rounded-2xl p-8 lg:p-12 flex items-center justify-center min-h-[500px]">
-        <div class="w-full max-w-lg">
-          <img 
-            id="glassPreview" 
-            src="/lunettes.svg" 
-            alt="Aperçu des lunettes" 
-            class="w-full h-auto transition-all duration-300"
-          />
-        </div>
-      </div>
-
-      <!-- Colonne droite : Formulaire de personnalisation -->
-      <div class="space-y-8">
+  <div class="bg-base-100">
+    <div class="max-w-[1920px] mx-auto">
+      <!-- Grille 2 colonnes -->
+      <div class="grid grid-cols-2 min-h-screen">
         
-        <!-- Matériau de la monture -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Matériau de la monture
-          </label>
-          <select class="select select-bordered w-full rounded-lg" id="frameMaterial">
-            <option value="acetate">Acétate</option>
-            <option value="metal">Métal</option>
-            <option value="titane">Titane</option>
-            <option value="bois">Bois</option>
-          </select>
-        </div>
+        <!-- Colonne gauche : Preview fixe -->
+        <div class="bg-base-200 flex flex-col justify-between sticky top-0 h-screen p-16">
+          <!-- SVG Preview -->
+          <div class="flex-1 flex items-center justify-center" style="perspective: 1200px;">
+            <div id="glassPreview" class="w-full max-w-[480px] transition-transform duration-500" style="transform-style: preserve-3d;">
+              <div id="svgContainer"></div>
+            </div>
+          </div>
 
-        <!-- Couleur de la monture -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Couleur de la monture
-          </label>
-          <div class="grid grid-cols-6 gap-3">
-            <button class="w-12 h-12 rounded-full bg-[#1E1E1E] border-2 border-base-300 hover:border-primary transition-colors" data-color="#1E1E1E"></button>
-            <button class="w-12 h-12 rounded-full bg-[#2C3E50] border-2 border-base-300 hover:border-primary transition-colors" data-color="#2C3E50"></button>
-            <button class="w-12 h-12 rounded-full bg-[#D4B483] border-2 border-base-300 hover:border-primary transition-colors" data-color="#D4B483"></button>
-            <button class="w-12 h-12 rounded-full bg-[#CDAE7C] border-2 border-base-300 hover:border-primary transition-colors" data-color="#CDAE7C"></button>
-            <button class="w-12 h-12 rounded-full bg-[#D9D9D9] border-2 border-base-300 hover:border-primary transition-colors" data-color="#D9D9D9"></button>
-            <button class="w-12 h-12 rounded-full bg-white border-2 border-base-300 hover:border-primary transition-colors" data-color="#FFFFFF"></button>
+          <!-- Signature / Slogan -->
+          <div class="w-[380px] ml-auto mr-12 mb-6">
+            <p class="font-playfair text-[18px] italic text-base-content/80 leading-relaxed">
+              Votre regard,<br/>
+              <span class="font-bold text-secondary text-[20px]">VOTRE CRÉATION</span>
+            </p>
+          </div>
+
+          <!-- Slider rotation -->
+          <div class="w-full max-w-[560px] mx-auto">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-manrope font-medium text-base-content">Rotation</span>
+              <span class="text-xs font-manrope font-semibold text-primary"><span id="rotationAngle">0</span>°</span>
+            </div>
+            <input 
+              type="range" 
+              min="-180" 
+              max="180" 
+              value="0"
+              step="5"
+              class="range range-primary range-sm w-full" 
+              id="rotationSlider"
+            />
           </div>
         </div>
 
-        <!-- Matériau des branches -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Matériau des branches
-          </label>
-          <select class="select select-bordered w-full rounded-lg" id="templeMaterial">
-            <option value="acetate">Acétate</option>
-            <option value="metal">Métal</option>
-            <option value="titane">Titane</option>
-            <option value="bois">Bois de noyer</option>
-          </select>
-        </div>
+        <!-- Colonne droite : Formulaire -->
+        <div class="py-12 px-10">
+          <div class="max-w-[560px]">
+            <!-- Titre -->
+            <h1 class="font-playfair text-[42px] font-bold text-primary leading-tight mb-10">
+              Personnalisez vos lunettes
+            </h1>
 
-        <!-- Couleur des branches -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Couleur des branches
-          </label>
-          <div class="grid grid-cols-6 gap-3">
-            <button class="w-12 h-12 rounded-full bg-[#1E1E1E] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#1E1E1E"></button>
-            <button class="w-12 h-12 rounded-full bg-[#2C3E50] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#2C3E50"></button>
-            <button class="w-12 h-12 rounded-full bg-[#D4B483] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#D4B483"></button>
-            <button class="w-12 h-12 rounded-full bg-[#8B4513] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#8B4513"></button>
-            <button class="w-12 h-12 rounded-full bg-[#D9D9D9] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#D9D9D9"></button>
-            <button class="w-12 h-12 rounded-full bg-white border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#FFFFFF"></button>
+            <!-- Formulaire -->
+            <div class="space-y-7">
+              
+              <!-- Matériau -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Matériau
+                </h3>
+                <div class="relative">
+                  <select class="select select-bordered w-full font-manrope text-sm rounded-lg bg-base-100 pr-10" id="material">
+                    <option value="acetate">Acétate</option>
+                    <option value="metal">Métal</option>
+                    <option value="titane">Titane</option>
+                    <option value="bois">Bois</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Couleur de la monture -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Couleur de la monture
+                </h3>
+                <div class="grid grid-cols-6 gap-2">
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn ring-2 ring-primary ring-offset-1" style="background: #2D2926" data-color="#2D2926" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #4A5E4F" data-color="#4A5E4F" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #6B4423" data-color="#6B4423" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #D4A574" data-color="#D4A574" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #5B7B6F" data-color="#5B7B6F" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #8B4513" data-color="#8B4513" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #A0826D" data-color="#A0826D" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #B8956F" data-color="#B8956F" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #9B8B7E" data-color="#9B8B7E" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #C19A6B" data-color="#C19A6B" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #704214" data-color="#704214" data-target="frame"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #A9A9A9" data-color="#A9A9A9" data-target="frame"></button>
+                </div>
+              </div>
+
+              <!-- Couleur des branches -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Couleur des branches
+                </h3>
+                <div class="grid grid-cols-6 gap-2">
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn ring-2 ring-primary ring-offset-1" style="background: #2D2926" data-color="#2D2926" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #4A5E4F" data-color="#4A5E4F" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #6B4423" data-color="#6B4423" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #C0C0C0" data-color="#C0C0C0" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #5A4A3A" data-color="#5A4A3A" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #D4A574" data-color="#D4A574" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #A0826D" data-color="#A0826D" data-target="temple"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #8B7355" data-color="#8B7355" data-target="temple"></button>
+                </div>
+              </div>
+
+              <!-- Couleur des verres -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Couleur des verres
+                </h3>
+                <div class="grid grid-cols-6 gap-2">
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #BFBFBF" data-color="#BFBFBF" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #C1999B" data-color="#C1999B" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn ring-2 ring-primary ring-offset-1" style="background: #ABC4A1" data-color="#ABC4A1" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #2D2926" data-color="#2D2926" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #8AB0C8" data-color="#8AB0C8" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #D3A5A5" data-color="#D3A5A5" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #F0E68C" data-color="#F0E68C" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #808080" data-color="#808080" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #DFD7CA" data-color="#DFD7CA" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #B0A090" data-color="#B0A090" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #C8BDB1" data-color="#C8BDB1" data-target="lens"></button>
+                  <button class="w-10 h-10 rounded-md border-2 border-base-300 hover:border-primary transition-all color-btn" style="background: #6B7C6E" data-color="#6B7C6E" data-target="lens"></button>
+                </div>
+              </div>
+
+              <!-- Largeur du pont -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider">
+                    Largeur du pont
+                  </h3>
+                  <span class="font-manrope text-xs font-semibold text-primary"><span id="bridgeValue">18</span>mm</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="14" 
+                  max="22" 
+                  value="18" 
+                  class="range range-primary range-sm w-full" 
+                  id="bridgeWidth"
+                />
+              </div>
+
+              <!-- Taille des verres -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider">
+                    Taille des verres
+                  </h3>
+                  <span class="font-manrope text-xs font-semibold text-primary"><span id="lensValue">52</span>mm</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="48" 
+                  max="58" 
+                  value="52" 
+                  class="range range-primary range-sm w-full" 
+                  id="lensSize"
+                />
+              </div>
+
+              <!-- Description -->
+              <div>
+                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
+                  Décrivez vos lunettes
+                </h3>
+                <textarea 
+                  class="textarea textarea-bordered w-full rounded-lg h-24 font-manrope text-xs resize-none" 
+                  placeholder="Ici, écrivez la description de vos lunettes pour que l'IA puisse les générer"
+                  id="description"
+                ></textarea>
+              </div>
+
+              <!-- Boutons -->
+              <div class="grid grid-cols-2 gap-4 pt-2">
+                <button class="btn bg-secondary hover:bg-secondary/90 text-secondary-content border-0 h-11 rounded-lg font-manrope font-medium text-xs normal-case shadow-sm">
+                  Générer avec l'IA
+                </button>
+                <button class="btn bg-primary hover:bg-primary/90 text-primary-content border-0 h-11 rounded-lg font-manrope font-medium text-xs normal-case shadow-sm" id="saveGlasses">
+                  Sauvegarder ma paire
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- Largeur du pont -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Largeur du pont : <span id="bridgeValue">18</span>mm
-          </label>
-          <input 
-            type="range" 
-            min="14" 
-            max="22" 
-            value="18" 
-            class="range range-primary" 
-            id="bridgeWidth"
-          />
-          <div class="flex justify-between text-xs text-base-content/60 mt-2">
-            <span>14mm</span>
-            <span>22mm</span>
-          </div>
-        </div>
-
-        <!-- Taille des verres -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Taille des verres : <span id="lensValue">52</span>mm
-          </label>
-          <input 
-            type="range" 
-            min="48" 
-            max="58" 
-            value="52" 
-            class="range range-primary" 
-            id="lensSize"
-          />
-          <div class="flex justify-between text-xs text-base-content/60 mt-2">
-            <span>48mm</span>
-            <span>58mm</span>
-          </div>
-        </div>
-
-        <!-- Description personnalisée -->
-        <div>
-          <label class="block text-sm font-semibold text-base-content mb-3">
-            Décrivez vos lunettes
-          </label>
-          <textarea 
-            class="textarea textarea-bordered w-full rounded-lg h-32" 
-            placeholder="Ex: Des lunettes élégantes avec une monture fine et des branches en bois..."
-            id="description"
-          ></textarea>
-        </div>
-
-        <!-- Boutons d'action -->
-        <div class="flex flex-col sm:flex-row gap-4">
-          <button class="btn btn-secondary flex-1 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-            </svg>
-            Générer avec l'IA
-          </button>
-          <button class="btn btn-primary flex-1 rounded-lg" id="saveGlasses">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-            </svg>
-            Sauvegarder ma paire
-          </button>
-        </div>
-
       </div>
-    </div>
 
-    <!-- Section : Mes créations sauvegardées -->
-    <div>
-      <h2 class="text-3xl font-playfair font-bold text-primary mb-8">
-        Mes créations
-      </h2>
-      
-      <div id="savedGlasses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Les lunettes sauvegardées apparaîtront ici -->
-        <div class="text-center text-base-content/60 py-12 col-span-full">
-          Aucune création sauvegardée pour le moment.
+      <!-- Section Vos créations -->
+      <div class="py-14 px-10 bg-base-100">
+        <h2 class="font-playfair text-[32px] font-bold text-primary mb-8">
+          Vos créations
+        </h2>
+        
+        <div id="savedGlasses" class="grid grid-cols-3 gap-5 max-w-[1100px]">
+          <!-- Les cartes seront ajoutées ici dynamiquement -->
         </div>
       </div>
     </div>
@@ -174,71 +205,189 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  // Mise à jour des valeurs des sliders
-  const bridgeWidth = document.getElementById('bridgeWidth') as HTMLInputElement;
-  const bridgeValue = document.getElementById('bridgeValue');
-  const lensSize = document.getElementById('lensSize') as HTMLInputElement;
-  const lensValue = document.getElementById('lensValue');
+  let rotationAngle = 0;
+  let currentFrameColor = '#2D2926';
+  let currentTempleColor = '#2D2926';
+  let currentLensColor = '#ABC4A1';
 
-  bridgeWidth?.addEventListener('input', () => {
-    if (bridgeValue) bridgeValue.textContent = bridgeWidth.value;
+  // Canvas signature
+  const canvas = document.getElementById('signatureCanvas') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  
+  if (canvas && ctx) {
+    const resizeCanvas = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * 2;
+      canvas.height = rect.height * 2;
+      ctx.scale(2, 2);
+      ctx.strokeStyle = '#1E1E1E';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    };
+    resizeCanvas();
+
+    const getPosition = (e: MouseEvent | TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const startDrawing = (e: MouseEvent | TouchEvent) => {
+      isDrawing = true;
+      const pos = getPosition(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+    };
+
+    const draw = (e: MouseEvent | TouchEvent) => {
+      if (!isDrawing) return;
+      const pos = getPosition(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+    };
+
+    const stopDrawing = () => { isDrawing = false; };
+
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    canvas.addEventListener('touchend', stopDrawing);
+
+    document.getElementById('clearSignature')?.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  }
+
+  // Charger SVG
+  async function loadSVG() {
+    try {
+      const response = await fetch('/lunettes.svg');
+      const svgText = await response.text();
+      const container = document.getElementById('svgContainer');
+      if (container) {
+        container.innerHTML = svgText;
+        const svg = container.querySelector('svg');
+        if (svg) {
+          svg.style.width = '100%';
+          svg.style.height = 'auto';
+          applyInitialColors();
+        }
+      }
+    } catch (error) {
+      console.error('Erreur chargement SVG:', error);
+    }
+  }
+
+  function applyInitialColors() {
+    updateSVGColors('frame', currentFrameColor);
+    updateSVGColors('temple', currentTempleColor);
+    updateSVGColors('lens', currentLensColor);
+  }
+
+  function updateSVGColors(target: string, color: string) {
+    const svg = document.querySelector('#svgContainer svg');
+    if (!svg) return;
+
+    if (target === 'frame') {
+      const monture = svg.querySelector('#monture');
+      monture?.querySelectorAll('path').forEach((el: SVGElement) => {
+        el.style.fill = color;
+        el.style.stroke = color;
+      });
+    } else if (target === 'temple') {
+      const branches = svg.querySelector('#branches');
+      branches?.querySelectorAll('path').forEach((el: SVGElement) => {
+        el.style.fill = color;
+        el.style.stroke = color;
+      });
+    } else if (target === 'lens') {
+      const verres = svg.querySelector('#verres');
+      verres?.querySelectorAll('path').forEach((el: SVGElement) => {
+        el.style.fill = color;
+        el.style.opacity = '0.5';
+      });
+    }
+  }
+
+  // Rotation
+  const rotationSlider = document.getElementById('rotationSlider') as HTMLInputElement;
+  const rotationDisplay = document.getElementById('rotationAngle');
+  const glassPreview = document.getElementById('glassPreview');
+
+  rotationSlider?.addEventListener('input', () => {
+    rotationAngle = parseInt(rotationSlider.value);
+    if (glassPreview) glassPreview.style.transform = `rotateY(${rotationAngle}deg)`;
+    if (rotationDisplay) rotationDisplay.textContent = rotationAngle.toString();
   });
 
-  lensSize?.addEventListener('input', () => {
-    if (lensValue) lensValue.textContent = lensSize.value;
-  });
-
-  // Gestion des couleurs (simulation)
-  const colorButtons = document.querySelectorAll('[data-color]');
-  colorButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      colorButtons.forEach(btn => btn.classList.remove('ring-4', 'ring-primary'));
-      button.classList.add('ring-4', 'ring-primary');
+  // Couleurs
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      const color = btn.getAttribute('data-color') || '#2D2926';
+      
+      document.querySelectorAll(`.color-btn[data-target="${target}"]`).forEach(b => {
+        b.classList.remove('ring-2', 'ring-primary', 'ring-offset-1');
+      });
+      btn.classList.add('ring-2', 'ring-primary', 'ring-offset-1');
+      
+      if (target === 'frame') currentFrameColor = color;
+      else if (target === 'temple') currentTempleColor = color;
+      else if (target === 'lens') currentLensColor = color;
+      
+      updateSVGColors(target, color);
     });
   });
 
-  const templeColorButtons = document.querySelectorAll('[data-temple-color]');
-  templeColorButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      templeColorButtons.forEach(btn => btn.classList.remove('ring-4', 'ring-primary'));
-      button.classList.add('ring-4', 'ring-primary');
-    });
+  // Sliders
+  document.getElementById('bridgeWidth')?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value;
+    const display = document.getElementById('bridgeValue');
+    if (display) display.textContent = value;
   });
 
-  // Sauvegarde d'une paire
-  const saveButton = document.getElementById('saveGlasses');
-  const savedGlassesContainer = document.getElementById('savedGlasses');
+  document.getElementById('lensSize')?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value;
+    const display = document.getElementById('lensValue');
+    if (display) display.textContent = value;
+  });
 
-  saveButton?.addEventListener('click', () => {
-    const frameMatSelect = document.getElementById('frameMaterial') as HTMLSelectElement;
-    const templeMaterial = (document.getElementById('templeMaterial') as HTMLSelectElement)?.value;
-    const description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
-
-    const card = document.createElement('div');
-    card.className = 'card bg-base-100 shadow-md hover:shadow-xl transition-shadow rounded-2xl overflow-hidden';
-    card.innerHTML = `
-      <figure class="bg-base-200 h-48 flex items-center justify-center p-6">
-        <img src="/lunettes.svg" alt="Lunettes personnalisées" class="h-full w-auto" />
-      </figure>
-      <div class="card-body p-6">
-        <h3 class="card-title font-playfair text-primary">Ma paire #${Date.now()}</h3>
-        <p class="text-sm text-base-content/70">
-          Monture : ${frameMatSelect?.value || 'Acétate'}<br/>
-          Branches : ${templeMaterial}
-        </p>
-        <div class="card-actions justify-end mt-4">
-          <button class="btn btn-sm btn-primary rounded-lg">Modifier</button>
-          <button class="btn btn-sm btn-ghost rounded-lg">Supprimer</button>
+  // Sauvegarder
+  document.getElementById('saveGlasses')?.addEventListener('click', () => {
+    const svgContainer = document.getElementById('svgContainer');
+    const svgClone = svgContainer?.innerHTML || '';
+    
+    const container = document.getElementById('savedGlasses');
+    if (container) {
+      const card = document.createElement('div');
+      card.className = 'bg-[#F9F9F6] border border-[#EAE6E1] rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow';
+      card.innerHTML = `
+        <div class="h-[180px] bg-base-200 flex items-center justify-center p-6">
+          ${svgClone}
         </div>
-      </div>
-    `;
-
-    if (savedGlassesContainer) {
-      const emptyMessage = savedGlassesContainer.querySelector('.text-center');
-      if (emptyMessage) emptyMessage.remove();
-      savedGlassesContainer.appendChild(card);
+        <div class="p-4 text-center">
+          <h3 class="font-playfair text-sm font-semibold text-base-content mb-3">
+            Paire Classique
+          </h3>
+          <button class="btn btn-ghost btn-xs w-full font-manrope text-xs normal-case">
+            Voir
+          </button>
+        </div>
+      `;
+      container.prepend(card);
     }
 
-    alert('Votre paire a été sauvegardée ! 👓');
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-top toast-end z-50';
+    toast.innerHTML = `<div class="alert alert-success shadow-lg"><span>✓ Paire sauvegardée !</span></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
   });
+
+  window.addEventListener('load', loadSVG);
 </script>

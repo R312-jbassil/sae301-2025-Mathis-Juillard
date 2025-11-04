@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Mes Lunettes - TaVue">
+  <div class="container mx-auto px-6 lg:px-12 py-12">
+    <div class="flex justify-between items-center mb-12">
+      <div>
+        <h1 class="text-4xl font-playfair font-bold text-primary mb-2">
+          Mes lunettes
+        </h1>
+        <p class="text-base-content/70">
+          Retrouvez toutes vos créations personnalisées
+        </p>
+      </div>
+      <a href="/personnalisation" class="btn btn-primary rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Créer une nouvelle paire
+      </a>
+    </div>
+
+    <!-- Filtres -->
+    <div class="flex flex-wrap gap-3 mb-8">
+      <button class="btn btn-sm btn-primary rounded-lg">Toutes</button>
+      <button class="btn btn-sm btn-outline rounded-lg">En cours</button>
+      <button class="btn btn-sm btn-outline rounded-lg">Commandées</button>
+      <button class="btn btn-sm btn-outline rounded-lg">Favorites</button>
+    </div>
+
+    <!-- Grille de lunettes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Lunette 1 -->
+      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
+        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
+          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
+          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+        </figure>
+        <div class="card-body p-6">
+          <h3 class="card-title font-playfair text-primary text-lg">Épure Classique</h3>
+          <p class="text-sm text-base-content/70 mb-2">
+            Acétate noir • Bois de noyer
+          </p>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="badge badge-secondary badge-sm">Créée le 15/01/25</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="/produit/1" class="btn btn-sm btn-primary flex-1 rounded-lg">
+              Voir
+            </a>
+            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
+              Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lunette 2 -->
+      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
+        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
+          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
+          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-error" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+        </figure>
+        <div class="card-body p-6">
+          <h3 class="card-title font-playfair text-primary text-lg">Moderne Doré</h3>
+          <p class="text-sm text-base-content/70 mb-2">
+            Métal doré • Acétate beige
+          </p>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="badge badge-accent badge-sm">Créée le 12/01/25</span>
+            <span class="badge badge-success badge-sm">Commandée</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="/produit/2" class="btn btn-sm btn-primary flex-1 rounded-lg">
+              Voir
+            </a>
+            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
+              Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lunette 3 -->
+      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
+        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
+          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
+          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </button>
+        </figure>
+        <div class="card-body p-6">
+          <h3 class="card-title font-playfair text-primary text-lg">Minimaliste Acier</h3>
+          <p class="text-sm text-base-content/70 mb-2">
+            Titane argenté • Ultra-léger
+          </p>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="badge badge-info badge-sm">Créée le 10/01/25</span>
+          </div>
+          <div class="flex gap-2">
+            <a href="/produit/3" class="btn btn-sm btn-primary flex-1 rounded-lg">
+              Voir
+            </a>
+            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
+              Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- État vide (si aucune lunette) -->
+    <!-- <div class="text-center py-20">
+      <div class="text-6xl mb-6">👓</div>
+      <h2 class="text-2xl font-playfair font-bold text-primary mb-4">
+        Aucune création pour le moment
+      </h2>
+      <p class="text-base-content/70 mb-8">
+        Créez votre première paire de lunettes personnalisées
+      </p>
+      <a href="/personnalisation" class="btn btn-primary rounded-lg">
+        Commencer
+      </a>
+    </div> -->
+  </div>
+</Layout>
