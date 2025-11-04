@@ -1,22 +1,104 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+import '../styles/global.css';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="fr" data-theme="tavue">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="bg-base-100 border-b border-base-300">
+      <nav class="container mx-auto px-6 lg:px-12 py-5">
+        <div class="flex items-center justify-between">
+          <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <img src="logo.webp" alt="TaVue Logo" class="h-8 w-auto" />
+          </a>
+          
+          <ul class="hidden md:flex items-center gap-10">
+            <li>
+              <a 
+                href="/personnalisation" 
+                class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/personnalisation' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
+              >
+                Personnalisation
+              </a>
+            </li>
+            <li>
+              <a 
+                href="/mes-lunettes" 
+                class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/mes-lunettes' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
+              >
+                Mes lunettes
+              </a>
+            </li>
+            <li>
+              <a 
+                href="/panier" 
+                class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/panier' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
+              >
+                Panier
+              </a>
+            </li>
+            <li>
+              <a 
+                href="/connexion" 
+                class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/connexion' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
+              >
+                Mon compte
+              </a>
+            </li>
+          </ul>
+
+          <!-- Mobile menu button -->
+          <button class="md:hidden btn btn-ghost btn-square btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-5 h-5 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-base-100 border-t border-base-300 mt-32">
+      <div class="container mx-auto px-6 lg:px-12 py-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="text-center md:text-left">
+            <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+              <img src="logo.webp" alt="TaVue Logo" class="h-6 w-auto" />
+            </a>
+          </div>
+          
+          <ul class="flex items-center gap-8 text-sm">
+            <li><a href="/personnalisation" class="hover:text-primary transition-colors">Personnalisation</a></li>
+            <li><a href="/produit" class="hover:text-primary transition-colors">Produit</a></li>
+            <li><a href="/panier" class="hover:text-primary transition-colors">Panier</a></li>
+            <li><a href="/contact" class="hover:text-primary transition-colors">Contact</a></li>
+          </ul>
+          
+          <p class="text-sm text-base-content/60">&copy; {new Date().getFullYear()} TaVue</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

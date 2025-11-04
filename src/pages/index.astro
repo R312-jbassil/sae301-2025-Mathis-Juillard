@@ -1,11 +1,215 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="TaVue - Votre regard, votre création">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <div class="container mx-auto px-6 lg:px-12 py-20 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Texte Hero -->
+        <div class="max-w-2xl">
+          <h1 class="text-5xl lg:text-7xl font-playfair font-bold text-primary leading-tight mb-6">
+            Votre regard,<br/>
+            votre création.
+          </h1>
+          <p class="text-lg lg:text-xl text-base-content/70 mb-8 leading-relaxed">
+            Concevez vos lunettes sur mesure avec notre configurateur intelligent. Design épuré, fabrication française, qualité incomparable.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/personnalisation" class="btn btn-primary btn-lg rounded-lg">
+              Découvrir le configurateur
+            </a>
+            <a href="#philosophie" class="btn btn-outline btn-lg rounded-lg">
+              En savoir plus
+            </a>
+          </div>
+        </div>
+
+        <!-- Image Hero -->
+        <div class="relative">
+          <div class="bg-base-200 rounded-3xl p-12 flex items-center justify-center shadow-xl">
+            <img src="/lunettes.svg" alt="Lunettes TaVue" class="w-full max-w-md h-auto" />
+          </div>
+          <!-- Décoration -->
+          <div class="absolute -top-4 -right-4 w-24 h-24 bg-secondary/20 rounded-full blur-3xl"></div>
+          <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-accent/20 rounded-full blur-3xl"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="bg-primary text-primary-content py-16">
+    <div class="container mx-auto px-6 lg:px-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        <div>
+          <div class="text-4xl lg:text-5xl font-playfair font-bold mb-2">100%</div>
+          <div class="text-sm opacity-80">Fabrication française</div>
+        </div>
+        <div>
+          <div class="text-4xl lg:text-5xl font-playfair font-bold mb-2">500+</div>
+          <div class="text-sm opacity-80">Créations uniques</div>
+        </div>
+        <div>
+          <div class="text-4xl lg:text-5xl font-playfair font-bold mb-2">48h</div>
+          <div class="text-sm opacity-80">Livraison express</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Notre philosophie -->
+  <section id="philosophie" class="py-20 lg:py-32">
+    <div class="container mx-auto px-6 lg:px-12">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <h2 class="text-4xl lg:text-5xl font-playfair font-bold text-primary mb-6">
+          Notre philosophie
+        </h2>
+        <p class="text-lg text-base-content/70">
+          Des lunettes pensées et fabriquées avec passion, alliant savoir-faire artisanal et innovation technologique.
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Fabrication française -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl p-8">
+          <div class="text-5xl mb-6">🇫🇷</div>
+          <h3 class="text-2xl font-playfair font-semibold text-primary mb-4">
+            Fabrication française
+          </h3>
+          <p class="text-base-content/70 leading-relaxed">
+            Chaque paire est conçue et assemblée en France avec des matériaux nobles et durables. Un engagement pour la qualité et le savoir-faire local.
+          </p>
+        </div>
+        
+        <!-- Design épuré -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl p-8">
+          <div class="text-5xl mb-6">✨</div>
+          <h3 class="text-2xl font-playfair font-semibold text-primary mb-4">
+            Design épuré
+          </h3>
+          <p class="text-base-content/70 leading-relaxed">
+            Un style minimaliste et raffiné qui s'adapte à votre personnalité et à votre quotidien. L'élégance dans la simplicité.
+          </p>
+        </div>
+
+        <!-- Sur mesure -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl p-8">
+          <div class="text-5xl mb-6">🎨</div>
+          <h3 class="text-2xl font-playfair font-semibold text-primary mb-4">
+            Sur mesure
+          </h3>
+          <p class="text-base-content/70 leading-relaxed">
+            Personnalisez chaque détail : matériaux, couleurs, dimensions. Vos lunettes sont uniques, comme vous.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Collection -->
+  <section class="py-20 lg:py-32 bg-base-200">
+    <div class="container mx-auto px-6 lg:px-12">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl lg:text-5xl font-playfair font-bold text-primary mb-4">
+          Découvrez nos modèles
+        </h2>
+        <p class="text-lg text-base-content/70">
+          Explorez les créations favorites de notre communauté
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Modèle 1 -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden group">
+          <figure class="bg-base-200 h-64 flex items-center justify-center relative overflow-hidden">
+            <img src="/lunettes.svg" alt="Épure Classique" class="w-3/4 h-auto transition-transform group-hover:scale-110 duration-300" />
+          </figure>
+          <div class="card-body p-6">
+            <h3 class="card-title font-playfair text-xl text-primary">Épure Classique</h3>
+            <p class="text-sm text-base-content/70 mb-4">
+              Monture acétate noir, branches bois de noyer
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-secondary badge-lg">Populaire</span>
+              <a href="/produit/1" class="btn btn-sm btn-primary rounded-lg">
+                Découvrir
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modèle 2 -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden group">
+          <figure class="bg-base-200 h-64 flex items-center justify-center relative overflow-hidden">
+            <img src="/lunettes.svg" alt="Moderne Doré" class="w-3/4 h-auto transition-transform group-hover:scale-110 duration-300" />
+          </figure>
+          <div class="card-body p-6">
+            <h3 class="card-title font-playfair text-xl text-primary">Moderne Doré</h3>
+            <p class="text-sm text-base-content/70 mb-4">
+              Monture métal doré, branches acétate beige
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-accent badge-lg">Tendance</span>
+              <a href="/produit/2" class="btn btn-sm btn-primary rounded-lg">
+                Découvrir
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modèle 3 -->
+        <div class="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden group">
+          <figure class="bg-base-200 h-64 flex items-center justify-center relative overflow-hidden">
+            <img src="/lunettes.svg" alt="Minimaliste Acier" class="w-3/4 h-auto transition-transform group-hover:scale-110 duration-300" />
+          </figure>
+          <div class="card-body p-6">
+            <h3 class="card-title font-playfair text-xl text-primary">Minimaliste Acier</h3>
+            <p class="text-sm text-base-content/70 mb-4">
+              Monture titane argenté, ultra-léger
+            </p>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-info badge-lg">Nouveau</span>
+              <a href="/produit/3" class="btn btn-sm btn-primary rounded-lg">
+                Découvrir
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-12">
+        <a href="/personnalisation" class="btn btn-outline btn-lg rounded-lg">
+          Voir toute la collection
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final -->
+  <section class="py-20 lg:py-32 bg-gradient-to-br from-primary via-primary to-primary/90 text-primary-content relative overflow-hidden">
+    <!-- Décoration -->
+    <div class="absolute top-0 left-0 w-full h-full opacity-10">
+      <div class="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="container mx-auto px-6 lg:px-12 text-center relative z-10">
+      <h2 class="text-4xl lg:text-5xl font-playfair font-bold mb-6">
+        Prêt à créer vos lunettes ?
+      </h2>
+      <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
+        Lancez-vous dans l'aventure et donnez vie à la paire qui vous ressemble vraiment.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/personnalisation" class="btn btn-secondary btn-lg rounded-lg shadow-xl hover:shadow-2xl">
+          Commencer maintenant
+        </a>
+        <a href="/contact" class="btn btn-outline border-2 border-white text-white hover:bg-white hover:text-primary btn-lg rounded-lg">
+          Nous contacter
+        </a>
+      </div>
+    </div>
+  </section>
 </Layout>

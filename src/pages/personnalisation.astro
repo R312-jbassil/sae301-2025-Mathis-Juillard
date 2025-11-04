@@ -1,0 +1,244 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Personnalisation - TaVue">
+  <div class="container mx-auto px-6 lg:px-12 py-12">
+    <!-- Titre de la page -->
+    <div class="mb-12">
+      <h1 class="text-4xl lg:text-5xl font-playfair font-bold text-primary mb-4">
+        Configurateur de lunettes
+      </h1>
+      <p class="text-base-content/70 text-lg">
+        Créez votre paire unique en personnalisant chaque détail.
+      </p>
+    </div>
+
+    <!-- Grille principale : Preview + Formulaire -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+      
+      <!-- Colonne gauche : Aperçu SVG -->
+      <div class="bg-base-200 rounded-2xl p-8 lg:p-12 flex items-center justify-center min-h-[500px]">
+        <div class="w-full max-w-lg">
+          <img 
+            id="glassPreview" 
+            src="/lunettes.svg" 
+            alt="Aperçu des lunettes" 
+            class="w-full h-auto transition-all duration-300"
+          />
+        </div>
+      </div>
+
+      <!-- Colonne droite : Formulaire de personnalisation -->
+      <div class="space-y-8">
+        
+        <!-- Matériau de la monture -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Matériau de la monture
+          </label>
+          <select class="select select-bordered w-full rounded-lg" id="frameMaterial">
+            <option value="acetate">Acétate</option>
+            <option value="metal">Métal</option>
+            <option value="titane">Titane</option>
+            <option value="bois">Bois</option>
+          </select>
+        </div>
+
+        <!-- Couleur de la monture -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Couleur de la monture
+          </label>
+          <div class="grid grid-cols-6 gap-3">
+            <button class="w-12 h-12 rounded-full bg-[#1E1E1E] border-2 border-base-300 hover:border-primary transition-colors" data-color="#1E1E1E"></button>
+            <button class="w-12 h-12 rounded-full bg-[#2C3E50] border-2 border-base-300 hover:border-primary transition-colors" data-color="#2C3E50"></button>
+            <button class="w-12 h-12 rounded-full bg-[#D4B483] border-2 border-base-300 hover:border-primary transition-colors" data-color="#D4B483"></button>
+            <button class="w-12 h-12 rounded-full bg-[#CDAE7C] border-2 border-base-300 hover:border-primary transition-colors" data-color="#CDAE7C"></button>
+            <button class="w-12 h-12 rounded-full bg-[#D9D9D9] border-2 border-base-300 hover:border-primary transition-colors" data-color="#D9D9D9"></button>
+            <button class="w-12 h-12 rounded-full bg-white border-2 border-base-300 hover:border-primary transition-colors" data-color="#FFFFFF"></button>
+          </div>
+        </div>
+
+        <!-- Matériau des branches -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Matériau des branches
+          </label>
+          <select class="select select-bordered w-full rounded-lg" id="templeMaterial">
+            <option value="acetate">Acétate</option>
+            <option value="metal">Métal</option>
+            <option value="titane">Titane</option>
+            <option value="bois">Bois de noyer</option>
+          </select>
+        </div>
+
+        <!-- Couleur des branches -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Couleur des branches
+          </label>
+          <div class="grid grid-cols-6 gap-3">
+            <button class="w-12 h-12 rounded-full bg-[#1E1E1E] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#1E1E1E"></button>
+            <button class="w-12 h-12 rounded-full bg-[#2C3E50] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#2C3E50"></button>
+            <button class="w-12 h-12 rounded-full bg-[#D4B483] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#D4B483"></button>
+            <button class="w-12 h-12 rounded-full bg-[#8B4513] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#8B4513"></button>
+            <button class="w-12 h-12 rounded-full bg-[#D9D9D9] border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#D9D9D9"></button>
+            <button class="w-12 h-12 rounded-full bg-white border-2 border-base-300 hover:border-primary transition-colors" data-temple-color="#FFFFFF"></button>
+          </div>
+        </div>
+
+        <!-- Largeur du pont -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Largeur du pont : <span id="bridgeValue">18</span>mm
+          </label>
+          <input 
+            type="range" 
+            min="14" 
+            max="22" 
+            value="18" 
+            class="range range-primary" 
+            id="bridgeWidth"
+          />
+          <div class="flex justify-between text-xs text-base-content/60 mt-2">
+            <span>14mm</span>
+            <span>22mm</span>
+          </div>
+        </div>
+
+        <!-- Taille des verres -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Taille des verres : <span id="lensValue">52</span>mm
+          </label>
+          <input 
+            type="range" 
+            min="48" 
+            max="58" 
+            value="52" 
+            class="range range-primary" 
+            id="lensSize"
+          />
+          <div class="flex justify-between text-xs text-base-content/60 mt-2">
+            <span>48mm</span>
+            <span>58mm</span>
+          </div>
+        </div>
+
+        <!-- Description personnalisée -->
+        <div>
+          <label class="block text-sm font-semibold text-base-content mb-3">
+            Décrivez vos lunettes
+          </label>
+          <textarea 
+            class="textarea textarea-bordered w-full rounded-lg h-32" 
+            placeholder="Ex: Des lunettes élégantes avec une monture fine et des branches en bois..."
+            id="description"
+          ></textarea>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button class="btn btn-secondary flex-1 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+            </svg>
+            Générer avec l'IA
+          </button>
+          <button class="btn btn-primary flex-1 rounded-lg" id="saveGlasses">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
+            </svg>
+            Sauvegarder ma paire
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section : Mes créations sauvegardées -->
+    <div>
+      <h2 class="text-3xl font-playfair font-bold text-primary mb-8">
+        Mes créations
+      </h2>
+      
+      <div id="savedGlasses" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Les lunettes sauvegardées apparaîtront ici -->
+        <div class="text-center text-base-content/60 py-12 col-span-full">
+          Aucune création sauvegardée pour le moment.
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Mise à jour des valeurs des sliders
+  const bridgeWidth = document.getElementById('bridgeWidth') as HTMLInputElement;
+  const bridgeValue = document.getElementById('bridgeValue');
+  const lensSize = document.getElementById('lensSize') as HTMLInputElement;
+  const lensValue = document.getElementById('lensValue');
+
+  bridgeWidth?.addEventListener('input', () => {
+    if (bridgeValue) bridgeValue.textContent = bridgeWidth.value;
+  });
+
+  lensSize?.addEventListener('input', () => {
+    if (lensValue) lensValue.textContent = lensSize.value;
+  });
+
+  // Gestion des couleurs (simulation)
+  const colorButtons = document.querySelectorAll('[data-color]');
+  colorButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      colorButtons.forEach(btn => btn.classList.remove('ring-4', 'ring-primary'));
+      button.classList.add('ring-4', 'ring-primary');
+    });
+  });
+
+  const templeColorButtons = document.querySelectorAll('[data-temple-color]');
+  templeColorButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      templeColorButtons.forEach(btn => btn.classList.remove('ring-4', 'ring-primary'));
+      button.classList.add('ring-4', 'ring-primary');
+    });
+  });
+
+  // Sauvegarde d'une paire
+  const saveButton = document.getElementById('saveGlasses');
+  const savedGlassesContainer = document.getElementById('savedGlasses');
+
+  saveButton?.addEventListener('click', () => {
+    const frameMatSelect = document.getElementById('frameMaterial') as HTMLSelectElement;
+    const templeMaterial = (document.getElementById('templeMaterial') as HTMLSelectElement)?.value;
+    const description = (document.getElementById('description') as HTMLTextAreaElement)?.value;
+
+    const card = document.createElement('div');
+    card.className = 'card bg-base-100 shadow-md hover:shadow-xl transition-shadow rounded-2xl overflow-hidden';
+    card.innerHTML = `
+      <figure class="bg-base-200 h-48 flex items-center justify-center p-6">
+        <img src="/lunettes.svg" alt="Lunettes personnalisées" class="h-full w-auto" />
+      </figure>
+      <div class="card-body p-6">
+        <h3 class="card-title font-playfair text-primary">Ma paire #${Date.now()}</h3>
+        <p class="text-sm text-base-content/70">
+          Monture : ${frameMatSelect?.value || 'Acétate'}<br/>
+          Branches : ${templeMaterial}
+        </p>
+        <div class="card-actions justify-end mt-4">
+          <button class="btn btn-sm btn-primary rounded-lg">Modifier</button>
+          <button class="btn btn-sm btn-ghost rounded-lg">Supprimer</button>
+        </div>
+      </div>
+    `;
+
+    if (savedGlassesContainer) {
+      const emptyMessage = savedGlassesContainer.querySelector('.text-center');
+      if (emptyMessage) emptyMessage.remove();
+      savedGlassesContainer.appendChild(card);
+    }
+
+    alert('Votre paire a été sauvegardée ! 👓');
+  });
+</script>
