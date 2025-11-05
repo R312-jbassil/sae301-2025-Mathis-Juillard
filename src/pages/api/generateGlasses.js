@@ -1,4 +1,6 @@
 // src/pages/api/generateGlasses.js
+export const prerender = false;
+
 import { OpenAI } from 'openai';
 
 const OR_TOKEN = import.meta.env.OR_TOKEN;
@@ -16,19 +18,33 @@ export const GET = () => json({ ok: true, hint: 'POST only' });
 export const POST = async ({ request }) => {
   try {
     console.log('=== API generateGlasses called ===');
-    console.log('OR_TOKEN:', OR_TOKEN ? 'Present (length: ' + OR_TOKEN.length + ')' : 'MISSING');
+    console.log('OR_TOKEN:', OR_TOKEN ? `Present (length: ${OR_TOKEN.length})` : 'MISSING');
     console.log('OR_URL:', OR_URL);
     console.log('OR_MODEL:', OR_MODEL);
-    
+
     if (!OR_TOKEN) {
-      console.error('ERROR: OR_TOKEN is missing!');
       return json({ error: 'OR_TOKEN manquant' }, 500);
     }
 
-    const body = await request.json();
-    console.log('Body received:', body);
-    
-    // Compat : accepte soit un tableau de messages [{role,content}], soit {prompt:"..."}
+    // Lire le body avec clone() pour éviter les problèmes Astro
+    let body;
+    try {
+      const clonedRequest = request.clone();
+      const bodyText = await clonedRequest.text();
+      console.log('Body text received:', bodyText);
+      console.log('Body text length:', bodyText.length);
+      
+      if (!bodyText || bodyText.length === 0) {
+        console.error('Empty body received!');
+        return json({ error: 'Empty request body' }, 400);
+      }
+      
+      body = JSON.parse(bodyText);
+      console.log('Body parsed:', body);
+    } catch (e) {
+      console.error('JSON parse error:', e);
+      return json({ error: 'Invalid JSON in request body' }, 400);
+    }    // Compat : accepte soit un tableau de messages [{role,content}], soit {prompt:"..."}
     const messages = Array.isArray(body)
       ? body
       : (Array.isArray(body?.messages) ? body.messages

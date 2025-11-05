@@ -615,10 +615,15 @@ import Layout from '../layouts/Layout.astro';
   }
 
   async function callGenerateGlasses(messages: Array<{role: string, content: string}>) {
+    console.log('callGenerateGlasses called with messages:', messages);
+    const bodyData = { messages };
+    console.log('Body data to send:', bodyData);
+    console.log('Body JSON:', JSON.stringify(bodyData));
+    
     const res = await fetch('/api/generateGlasses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(messages),
+      body: JSON.stringify(bodyData),
     });
     const data = await res.json(); // { svg: {role, content} } ou {error}
     if (!res.ok) throw new Error(data?.error || 'Erreur API');
