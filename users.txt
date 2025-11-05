@@ -1,3 +1,7 @@
 mdp pocketbase : 
 -login : mathisjuillard@icloud.com
 -mdp : Juillardmathis12 
+
+utilisateur test :
+-login : mathis@tavue.fr
+-mdp : 12345678
