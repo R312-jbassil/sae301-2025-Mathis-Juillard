@@ -3,7 +3,11 @@ export const prerender = false;
 
 import PocketBase from 'pocketbase';
 
-const PB_URL = process.env.PUBLIC_PB_URL || 'http://127.0.0.1:8090';
+// Utiliser le même système que pb.ts
+const PB_URL = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:8090'    // machine de dev
+  : 'http://localhost:8091';   // machine de déploiement
+
 const pb = new PocketBase(PB_URL);
 
 export async function POST({ request, cookies }) {

@@ -1,7 +1,12 @@
 import PocketBase from 'pocketbase';
 
 // Instance PocketBase - utilise la variable d'environnement en production
-const PB_URL = import.meta.env.PUBLIC_PB_URL || 'http://127.0.0.1:8090';
+var PB_URL = '';
+if(import.meta.env.MODE === 'development')
+    PB_URL = 'http://localhost:8090';    //localhost = machine de dev
+else 
+    PB_URL = 'http://localhost:8091';    //localhost = machine de déploiement
+
 export const pb = new PocketBase(PB_URL);
 
 // Types pour les collections

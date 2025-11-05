@@ -5,7 +5,10 @@ export const POST = async ({ request, cookies }) => {
   const { email, password } = await request.json();
 
   try {
-    const pb = new PocketBase('http://127.0.0.1:8090');
+    const PB_URL = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:8090'    // machine de dev
+      : 'http://localhost:8091';   // machine de déploiement
+    const pb = new PocketBase(PB_URL);
     
     const auth = await pb
       .collection('users')

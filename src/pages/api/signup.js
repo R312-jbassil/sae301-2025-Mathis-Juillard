@@ -12,7 +12,10 @@ export const POST = async ({ request, cookies }) => {
       });
     }
 
-    const pb = new PocketBase('http://127.0.0.1:8090');
+    const PB_URL = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:8090'    // machine de dev
+      : 'http://localhost:8091';   // machine de déploiement
+    const pb = new PocketBase(PB_URL);
 
     // 1) Créer l'utilisateur dans la collection "users" (type Auth)
     await pb.collection('users').create({
