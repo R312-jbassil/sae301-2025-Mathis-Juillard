@@ -99,7 +99,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import pb from '../lib/pb';
+  import { pb } from '../lib/pocketbase';
 
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -131,7 +131,7 @@ import Layout from '../layouts/Layout.astro';
     googleErrorMessage.classList.add('hidden');
   }
 
-  // Google OAuth2
+  // --- Connexion via Google ---
   googleLoginBtn.addEventListener('click', async () => {
     hideGoogleError();
     try {
@@ -143,8 +143,8 @@ import Layout from '../layouts/Layout.astro';
     }
   });
 
-  // Connexion classique via API
-  form.addEventListener('submit', async (e) => {
+  // --- Connexion classique ---
+  form.onsubmit = async (e) => {
     e.preventDefault();
     hideError();
 
@@ -161,27 +161,16 @@ import Layout from '../layouts/Layout.astro';
     btnLoading.classList.remove('hidden');
 
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      await pb.collection('users').authWithPassword(email, password);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        window.location.href = '/personnalisation';
-      } else {
-        showError(data.error || 'Email ou mot de passe incorrect');
-        submitBtn.disabled = false;
-        btnText.classList.remove('hidden');
-        btnLoading.classList.add('hidden');
-      }
-    } catch (error) {
-      showError('Une erreur est survenue. Veuillez réessayer.');
+      // Redirection après connexion
+      window.location.href = '/personnalisation';
+    } catch (err) {
+      showError('Échec de connexion');
+      console.error(err);
       submitBtn.disabled = false;
       btnText.classList.remove('hidden');
       btnLoading.classList.add('hidden');
     }
-  });
+  };
 </script>

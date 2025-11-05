@@ -130,6 +130,8 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
+  import { pb } from '../lib/pocketbase';
+
   const form = document.getElementById('registerForm') as HTMLFormElement;
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -155,7 +157,7 @@ import Layout from '../layouts/Layout.astro';
   }
 
   // Gestion de la soumission du formulaire
-  form.addEventListener('submit', async (e) => {
+  form.onsubmit = async (e) => {
     e.preventDefault();
     hideError();
 
@@ -192,38 +194,36 @@ import Layout from '../layouts/Layout.astro';
     btnLoading.classList.remove('hidden');
 
     try {
-      // Appel à l'API signup
-      const res = await fetch('/api/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+      // 1) Créer l'utilisateur
+      await pb.collection('users').create({
+        email,
+        password,
+        passwordConfirm: password,
+        nom: name,
+        emailVisibility: true,
       });
 
-      const data = await res.json();
+      // 2) Connecter l'utilisateur automatiquement
+      await pb.collection('users').authWithPassword(email, password);
 
-      if (res.ok) {
-        window.location.href = '/personnalisation';
-      } else {
-        let errorMsg = data.error || 'Erreur lors de la création du compte';
-        
-        if (errorMsg.includes('email')) {
-          errorMsg = 'Cet email est déjà utilisé';
-        } else if (errorMsg.includes('password')) {
-          errorMsg = 'Le mot de passe ne respecte pas les critères requis';
-        }
-        
-        showError(errorMsg);
-        submitBtn.disabled = false;
-        btnText.classList.remove('hidden');
-        btnLoading.classList.add('hidden');
+      // 3) Redirection
+      window.location.href = '/personnalisation';
+    } catch (err: any) {
+      let errorMsg = 'Erreur lors de la création du compte';
+      
+      if (err?.message?.includes('email')) {
+        errorMsg = 'Cet email est déjà utilisé';
+      } else if (err?.message?.includes('password')) {
+        errorMsg = 'Le mot de passe ne respecte pas les critères requis';
       }
-    } catch (error) {
-      showError('Une erreur est survenue. Veuillez réessayer.');
+      
+      showError(errorMsg);
+      console.error(err);
       submitBtn.disabled = false;
       btnText.classList.remove('hidden');
       btnLoading.classList.add('hidden');
     }
-  });
+  };
 
   // Validation en temps réel de la confirmation du mot de passe
   passwordConfirmInput.addEventListener('input', () => {

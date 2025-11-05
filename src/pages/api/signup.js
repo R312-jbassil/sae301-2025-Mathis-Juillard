@@ -1,5 +1,5 @@
 // src/pages/api/signup.js
-import { pb } from "../../lib/pocketbase";
+import PocketBase from 'pocketbase';
 
 export const POST = async ({ request, cookies }) => {
   try {
@@ -12,13 +12,14 @@ export const POST = async ({ request, cookies }) => {
       });
     }
 
+    const pb = new PocketBase('http://127.0.0.1:8090');
+
     // 1) Créer l'utilisateur dans la collection "users" (type Auth)
     await pb.collection('users').create({
       email,
       password,
       passwordConfirm: password,
-      nom: name ?? "",
-      emailVisibility: true,
+      name: name ?? "",
     });
 
     // 2) Connecter immédiatement l'utilisateur pour installer le cookie d'auth
@@ -32,7 +33,7 @@ export const POST = async ({ request, cookies }) => {
       expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
     });
 
-    return new Response(JSON.stringify({ success: true, user: authData.record }), { 
+    return new Response(JSON.stringify({ user: authData.record }), { 
       status: 201,
       headers: { "Content-Type": "application/json" }
     });

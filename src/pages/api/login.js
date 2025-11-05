@@ -1,10 +1,12 @@
 // src/pages/api/login.js
-import { pb } from "../../lib/pocketbase";
+import PocketBase from 'pocketbase';
 
 export const POST = async ({ request, cookies }) => {
-  try {
-    const { email, password } = await request.json();
+  const { email, password } = await request.json();
 
+  try {
+    const pb = new PocketBase('http://127.0.0.1:8090');
+    
     const auth = await pb
       .collection('users')
       .authWithPassword(email, password);
@@ -17,7 +19,7 @@ export const POST = async ({ request, cookies }) => {
       expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
     });
 
-    return new Response(JSON.stringify({ success: true, user: auth.record }), {
+    return new Response(JSON.stringify({ user: auth.record }), {
       headers: { "Content-Type": "application/json" },
       status: 200,
     });
