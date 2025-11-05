@@ -25,8 +25,6 @@ export interface Lunettes {
   couleur_monture?: string;
   couleur_branches?: string;
   couleur_verres?: string;
-  materiau_monture_nom?: string;
-  materiau_branches_nom?: string;
   favori?: boolean;
   prix?: number;
 }

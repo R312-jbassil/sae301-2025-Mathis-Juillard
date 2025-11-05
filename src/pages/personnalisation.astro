@@ -84,6 +84,12 @@ import Layout from '../layouts/Layout.astro';
                     </svg>
                     Modifier
                   </button>
+                  <button id="downloadSvgBtn" class="btn btn-outline btn-secondary font-manrope" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Télécharger
+                  </button>
                 </div>
               </div>
             </div>
@@ -254,7 +260,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import { pb, saveLunettes, getCurrentUser, isAuthenticated } from '../lib/pocketbase';
+  import { pb, getCurrentUser, isAuthenticated } from '../lib/pocketbase';
 
   let rotationAngle = 0;
   let currentFrameColor = '#2D2926';
@@ -264,6 +270,7 @@ import Layout from '../layouts/Layout.astro';
   let currentTempleMaterial = 'acetate';
   let currentBridgeWidth = 18;
   let currentLensSize = 52;
+  let generatedAiSvg = ''; // Stocker le SVG généré par l'IA
 
   // Canvas signature
   let isDrawing = false;
@@ -521,6 +528,8 @@ import Layout from '../layouts/Layout.astro';
     const svgContainer = document.getElementById('svgContainer');
     const svgCode = svgContainer?.innerHTML || '';
 
+    console.log('SVG à sauvegarder:', svgCode.substring(0, 100) + '...');
+
     if (!svgCode) {
       showToast('Erreur: SVG non chargé', 'error');
       return;
@@ -532,12 +541,6 @@ import Layout from '../layouts/Layout.astro';
       return;
     }
 
-    // Récupérer les noms des matériaux pour l'affichage
-    const frameMaterialSelect = document.getElementById('frameMaterial') as HTMLSelectElement;
-    const templeMaterialSelect = document.getElementById('templeMaterial') as HTMLSelectElement;
-    const frameMaterialName = frameMaterialSelect?.options[frameMaterialSelect.selectedIndex]?.text || 'Acétate';
-    const templeMaterialName = templeMaterialSelect?.options[templeMaterialSelect.selectedIndex]?.text || 'Acétate';
-
     // Préparer les données
     const glassesData = {
       nom_modele: modelName,
@@ -548,18 +551,29 @@ import Layout from '../layouts/Layout.astro';
       couleur_monture: currentFrameColor,
       couleur_branches: currentTempleColor,
       couleur_verres: currentLensColor,
-      materiau_monture_nom: frameMaterialName,
-      materiau_branches_nom: templeMaterialName,
-      materiaux_monture: currentFrameMaterial, // ID de la relation
-      materiaux_branches: currentTempleMaterial, // ID de la relation
+      materiaux_monture: currentFrameMaterial,
+      materiaux_branches: currentTempleMaterial,
       users: currentUser.id,
     };
 
-    // Sauvegarder dans PocketBase
-    const result = await saveLunettes(glassesData);
+    console.log('Données à sauvegarder:', { ...glassesData, svg_code: svgCode.substring(0, 50) + '...' });
 
-    if (result.success) {
+    // Sauvegarder via l'API
+    try {
+      const response = await fetch('/api/saveLunettes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(glassesData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Erreur lors de la sauvegarde');
+      }
+
       showToast('Paire sauvegardée avec succès !', 'success');
+      console.log('Lunettes sauvegardées:', result);
       
       // Réinitialiser le champ nom
       if (modelNameInput) modelNameInput.value = '';
@@ -577,16 +591,16 @@ import Layout from '../layouts/Layout.astro';
             <h3 class="font-playfair text-sm font-semibold text-[#2C3E50] mb-3">
               ${modelName}
             </h3>
-            <a href="/produit/${result.data?.id}" class="btn btn-ghost btn-xs w-full font-manrope text-xs normal-case">
+            <a href="/produit/${result.id}" class="btn btn-ghost btn-xs w-full font-manrope text-xs normal-case">
               Voir
             </a>
           </div>
         `;
         container.prepend(card);
       }
-    } else {
-      showToast('Erreur lors de la sauvegarde', 'error');
-      console.error('Erreur:', result.error);
+    } catch (error: any) {
+      showToast('Erreur lors de la sauvegarde: ' + (error.message || 'Erreur inconnue'), 'error');
+      console.error('Erreur sauvegarde:', error);
     }
   });
 
@@ -656,6 +670,9 @@ import Layout from '../layouts/Layout.astro';
 
       promptHistory.push(aiMsg);
 
+      // Stocker le SVG généré
+      generatedAiSvg = aiMsg.content;
+
       // Injecter le SVG dans le preview
       const svgContainer = document.getElementById('svgContainer');
       if (svgContainer) {
@@ -667,6 +684,10 @@ import Layout from '../layouts/Layout.astro';
           applyCurrentColors(svg);
         }
       }
+
+      // Activer le bouton télécharger
+      const downloadBtn = document.getElementById('downloadSvgBtn') as HTMLButtonElement;
+      if (downloadBtn) downloadBtn.disabled = false;
 
       showAIAlert('success', '✅ Lunettes générées ! Vous pouvez maintenant les personnaliser.');
       editBtn.disabled = false;
@@ -705,6 +726,9 @@ import Layout from '../layouts/Layout.astro';
 
       promptHistory.push(aiMsg);
 
+      // Stocker le SVG modifié
+      generatedAiSvg = aiMsg.content;
+
       // Injecter le SVG
       const svgContainer = document.getElementById('svgContainer');
       if (svgContainer) {
@@ -716,6 +740,10 @@ import Layout from '../layouts/Layout.astro';
           applyCurrentColors(svg);
         }
       }
+
+      // Activer le bouton télécharger
+      const downloadBtn = document.getElementById('downloadSvgBtn') as HTMLButtonElement;
+      if (downloadBtn) downloadBtn.disabled = false;
 
       showAIAlert('success', '✅ Lunettes modifiées !');
       
@@ -754,6 +782,32 @@ import Layout from '../layouts/Layout.astro';
     });
   }
 
+  // Fonction pour télécharger le SVG
+  function downloadSvg() {
+    if (!generatedAiSvg) {
+      showAIAlert('warning', 'Aucun SVG généré à télécharger.');
+      return;
+    }
+
+    // Créer un blob avec le contenu SVG
+    const blob = new Blob([generatedAiSvg], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    
+    // Créer un lien de téléchargement
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lunettes-ia-${Date.now()}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showAIAlert('success', '✅ SVG téléchargé !');
+  }
+
   generateBtn?.addEventListener('click', handleGenerate);
   editBtn?.addEventListener('click', handleEdit);
+  
+  const downloadSvgBtn = document.getElementById('downloadSvgBtn');
+  downloadSvgBtn?.addEventListener('click', downloadSvg);
 </script>
