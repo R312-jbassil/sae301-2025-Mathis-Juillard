@@ -1,137 +1,398 @@
 ---
 import Layout from '../layouts/Layout.astro';
+// Note: Le chargement des lunettes se fera côté client avec PocketBase
 ---
 
 <Layout title="Mes Lunettes - TaVue">
-  <div class="container mx-auto px-6 lg:px-12 py-12">
-    <div class="flex justify-between items-center mb-12">
-      <div>
-        <h1 class="text-4xl font-playfair font-bold text-primary mb-2">
-          Mes lunettes
-        </h1>
-        <p class="text-base-content/70">
-          Retrouvez toutes vos créations personnalisées
+  <div class="bg-base-100 min-h-screen">
+    <div class="max-w-[1400px] mx-auto px-12 py-16">
+      
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-10">
+        <div>
+          <h1 class="font-playfair text-5xl font-bold text-primary mb-2">
+            Mes créations
+          </h1>
+          <p class="font-manrope text-base text-base-content/60">
+            Retrouvez toutes vos lunettes personnalisées
+          </p>
+        </div>
+        
+        <a href="/personnalisation" class="btn bg-[#2C3E50] hover:bg-[#2C3E50]/90 text-white border-0 h-12 rounded-lg font-manrope font-medium text-sm normal-case shadow-sm px-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+          </svg>
+          Créer une nouvelle paire
+        </a>
+      </div>
+
+      <!-- Filtres -->
+      <div class="flex items-center gap-3 mb-12">
+        <button class="btn btn-sm bg-[#2C3E50] text-white border-0 rounded-lg font-manrope font-medium text-sm normal-case h-10 px-6 hover:bg-[#2C3E50]/90" data-filter="all">
+          Toutes
+        </button>
+        <button class="btn btn-sm bg-transparent text-[#2C3E50] border border-[#2C3E50] hover:bg-[#2C3E50] hover:text-white rounded-lg font-manrope font-medium text-sm normal-case h-10 px-6" data-filter="favorites">
+          Favorites
+        </button>
+        <button class="btn btn-sm bg-transparent text-[#2C3E50] border border-[#2C3E50] hover:bg-[#2C3E50] hover:text-white rounded-lg font-manrope font-medium text-sm normal-case h-10 px-6" data-filter="recent">
+          Récentes
+        </button>
+      </div>
+
+      <!-- Grille de lunettes -->
+      <div id="glassesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Les cartes seront chargées dynamiquement depuis PocketBase -->
+      </div>
+
+      <!-- État de chargement -->
+      <div id="loading" class="flex justify-center items-center py-20">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+      </div>
+
+      <!-- État vide -->
+      <div id="emptyState" class="hidden">
+        <div class="flex flex-col items-center justify-center py-24">
+        <div class="text-6xl mb-6">👓</div>
+        <h2 class="font-playfair text-3xl font-bold text-[#2C3E50] mb-4">
+          Aucune création pour le moment
+        </h2>
+        <p class="text-gray-600 mb-8 text-center max-w-md font-manrope">
+          Créez votre première paire de lunettes personnalisées avec notre configurateur
         </p>
-      </div>
-      <a href="/personnalisation" class="btn btn-primary rounded-lg">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-        </svg>
-        Créer une nouvelle paire
-      </a>
-    </div>
-
-    <!-- Filtres -->
-    <div class="flex flex-wrap gap-3 mb-8">
-      <button class="btn btn-sm btn-primary rounded-lg">Toutes</button>
-      <button class="btn btn-sm btn-outline rounded-lg">En cours</button>
-      <button class="btn btn-sm btn-outline rounded-lg">Commandées</button>
-      <button class="btn btn-sm btn-outline rounded-lg">Favorites</button>
-    </div>
-
-    <!-- Grille de lunettes -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      <!-- Lunette 1 -->
-      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
-          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
-          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </button>
-        </figure>
-        <div class="card-body p-6">
-          <h3 class="card-title font-playfair text-primary text-lg">Épure Classique</h3>
-          <p class="text-sm text-base-content/70 mb-2">
-            Acétate noir • Bois de noyer
-          </p>
-          <div class="flex items-center gap-2 mb-4">
-            <span class="badge badge-secondary badge-sm">Créée le 15/01/25</span>
-          </div>
-          <div class="flex gap-2">
-            <a href="/produit/1" class="btn btn-sm btn-primary flex-1 rounded-lg">
-              Voir
-            </a>
-            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
-              Modifier
-            </button>
-          </div>
+        <a href="/personnalisation" class="btn bg-[#2C3E50] hover:bg-[#2C3E50]/90 text-white border-0 h-12 rounded-lg font-manrope font-medium text-sm normal-case shadow-sm px-8">
+          Commencer
+        </a>
         </div>
       </div>
 
-      <!-- Lunette 2 -->
-      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
-          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
-          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 fill-error" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </button>
-        </figure>
-        <div class="card-body p-6">
-          <h3 class="card-title font-playfair text-primary text-lg">Moderne Doré</h3>
-          <p class="text-sm text-base-content/70 mb-2">
-            Métal doré • Acétate beige
-          </p>
-          <div class="flex items-center gap-2 mb-4">
-            <span class="badge badge-accent badge-sm">Créée le 12/01/25</span>
-            <span class="badge badge-success badge-sm">Commandée</span>
-          </div>
-          <div class="flex gap-2">
-            <a href="/produit/2" class="btn btn-sm btn-primary flex-1 rounded-lg">
-              Voir
-            </a>
-            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
-              Modifier
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Lunette 3 -->
-      <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-        <figure class="bg-base-200 h-56 flex items-center justify-center p-8 relative">
-          <img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />
-          <button class="btn btn-circle btn-sm btn-ghost absolute top-4 right-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-          </button>
-        </figure>
-        <div class="card-body p-6">
-          <h3 class="card-title font-playfair text-primary text-lg">Minimaliste Acier</h3>
-          <p class="text-sm text-base-content/70 mb-2">
-            Titane argenté • Ultra-léger
-          </p>
-          <div class="flex items-center gap-2 mb-4">
-            <span class="badge badge-info badge-sm">Créée le 10/01/25</span>
-          </div>
-          <div class="flex gap-2">
-            <a href="/produit/3" class="btn btn-sm btn-primary flex-1 rounded-lg">
-              Voir
-            </a>
-            <button class="btn btn-sm btn-outline flex-1 rounded-lg">
-              Modifier
-            </button>
-          </div>
-        </div>
-      </div>
+      <!-- État vide (à afficher si aucune lunette) -->
+      <!-- <div class="flex flex-col items-center justify-center py-24">
+        <div class="text-6xl mb-6">👓</div>
+        <h2 class="font-playfair text-3xl font-bold text-primary mb-4">
+          Aucune création pour le moment
+        </h2>
+        <p class="text-base-content/70 mb-8 text-center max-w-md font-manrope">
+          Créez votre première paire de lunettes personnalisées avec notre configurateur
+        </p>
+        <a href="/personnalisation" class="btn bg-primary hover:bg-primary/90 text-primary-content border-0 h-12 rounded-lg font-manrope font-medium text-sm normal-case shadow-sm px-8">
+          Commencer
+        </a>
+      </div> -->
     </div>
-
-    <!-- État vide (si aucune lunette) -->
-    <!-- <div class="text-center py-20">
-      <div class="text-6xl mb-6">👓</div>
-      <h2 class="text-2xl font-playfair font-bold text-primary mb-4">
-        Aucune création pour le moment
-      </h2>
-      <p class="text-base-content/70 mb-8">
-        Créez votre première paire de lunettes personnalisées
-      </p>
-      <a href="/personnalisation" class="btn btn-primary rounded-lg">
-        Commencer
-      </a>
-    </div> -->
   </div>
 </Layout>
+
+<script>
+  import { pb, getUserLunettes, getCurrentUser, isAuthenticated, deleteLunettes, toggleFavori } from '../lib/pocketbase';
+
+  let allGlasses: any[] = [];
+  let currentFilter = 'all';
+
+  // Fonction pour formater la date
+  function formatDate(dateString: string) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+  }
+
+  // Fonction pour obtenir la couleur du badge selon l'index
+  function getBadgeColor(index: number) {
+    const colors = ['#C8A882', '#5A8C8C', '#B8956F', '#5B7B6F'];
+    return colors[index % colors.length];
+  }
+
+  // Fonction pour créer une carte de lunettes
+  function createGlassCard(glasses: any, index: number) {
+    const card = document.createElement('div');
+    card.className = 'bg-white border border-[#E5E5E5] rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 group';
+    card.setAttribute('data-glass-id', glasses.id);
+    card.setAttribute('data-is-favorite', glasses.favori ? 'true' : 'false');
+    
+    const badgeColor = getBadgeColor(index);
+    const createdDate = formatDate(glasses.created || glasses.date_creation);
+    
+    // Récupérer les informations des matériaux
+    const frameMaterial = glasses.materiau_monture_nom || 'Acétate';
+    const templeMaterial = glasses.materiau_branches_nom || 'Acétate';
+    
+    // Icône favori
+    const favoriteIconClass = glasses.favori ? 'text-red-500' : 'text-gray-400';
+    
+    card.innerHTML = `
+      <div class="relative">
+        <div class="h-[300px] bg-[#F5F5F5] flex items-center justify-center p-12">
+          <div class="w-full h-auto group-hover:scale-110 transition-transform duration-500">
+            ${glasses.svg_code || '<img src="/lunettes.svg" alt="Lunettes" class="w-full h-auto" />'}
+          </div>
+        </div>
+        <button class="absolute top-4 right-4 btn btn-circle btn-sm bg-white/90 backdrop-blur border-0 shadow-md hover:bg-white transition-all" data-favorite data-id="${glasses.id}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${favoriteIconClass}" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <span class="absolute top-4 left-4 text-white text-xs font-manrope font-medium px-4 py-2 rounded-full" style="background-color: ${badgeColor}">
+          Créée le ${createdDate}
+        </span>
+      </div>
+      
+      <div class="p-6">
+        <div class="flex items-start justify-between mb-3">
+          <h3 class="font-playfair text-2xl font-semibold text-[#2C3E50] flex-1">
+            ${glasses.nom_modele || 'Sans nom'}
+          </h3>
+          ${glasses.favori ? '<span class="badge badge-error badge-sm gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>Favori</span>' : ''}
+        </div>
+        <div class="text-sm text-gray-600 space-y-1.5 mb-6 font-manrope">
+          <p><span class="font-semibold text-gray-800">Monture :</span> ${frameMaterial}</p>
+          <p><span class="font-semibold text-gray-800">Branches :</span> ${templeMaterial}</p>
+          <p><span class="font-semibold text-gray-800">Pont :</span> ${glasses.largeur_pont || 18}mm</p>
+          <p><span class="font-semibold text-gray-800">Verres :</span> ${glasses.taille_verres || 52}mm</p>
+        </div>
+        
+        <div class="flex gap-3">
+          <a href="/produit/${glasses.id}" class="btn bg-[#2C3E50] hover:bg-[#2C3E50]/90 text-white border-0 flex-1 h-11 rounded-lg font-manrope font-medium text-sm normal-case">
+            Voir
+          </a>
+          <button class="btn bg-transparent text-red-500 border border-red-500 hover:bg-red-500 hover:text-white flex-1 h-11 rounded-lg font-manrope font-medium text-sm normal-case" data-delete="${glasses.id}">
+            Supprimer
+          </button>
+        </div>
+      </div>
+    `;
+    
+    return card;
+  }
+
+  // Fonction pour afficher les lunettes
+  function displayGlasses(glasses: any[]) {
+    const grid = document.getElementById('glassesGrid');
+    const loading = document.getElementById('loading');
+    const emptyState = document.getElementById('emptyState');
+    
+    if (loading) loading.classList.add('hidden');
+    
+    if (!glasses || glasses.length === 0) {
+      if (grid) grid.classList.add('hidden');
+      if (emptyState) emptyState.classList.remove('hidden');
+      return;
+    }
+    
+    if (grid) {
+      grid.classList.remove('hidden');
+      grid.innerHTML = '';
+      glasses.forEach((glass, index) => {
+        const card = createGlassCard(glass, index);
+        grid.appendChild(card);
+      });
+    }
+    if (emptyState) emptyState.classList.add('hidden');
+    
+    // Réattacher les événements
+    attachEventListeners();
+  }
+
+  // Attacher les événements aux boutons
+  function attachEventListeners() {
+    // Gestion des favoris
+    document.querySelectorAll('[data-favorite]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const id = btn.getAttribute('data-id');
+        const icon = btn.querySelector('svg');
+        
+        if (!id || !icon) return;
+
+        // Trouver la lunette dans le tableau
+        const glassesItem = allGlasses.find(g => g.id === id);
+        if (!glassesItem) return;
+
+        const currentStatus = glassesItem.favori || false;
+
+        // Désactiver le bouton temporairement
+        btn.setAttribute('disabled', 'true');
+
+        // Mettre à jour dans PocketBase
+        const result = await toggleFavori(id, currentStatus);
+
+        if (result.success) {
+          // Mettre à jour l'UI
+          const newStatus = !currentStatus;
+          glassesItem.favori = newStatus;
+          
+          if (newStatus) {
+            icon.classList.remove('text-gray-400');
+            icon.classList.add('text-red-500');
+          } else {
+            icon.classList.remove('text-red-500');
+            icon.classList.add('text-gray-400');
+          }
+
+          // Mettre à jour l'attribut data
+          const card = btn.closest('[data-glass-id]');
+          if (card) {
+            card.setAttribute('data-is-favorite', newStatus ? 'true' : 'false');
+          }
+
+          // Réappliquer les filtres si nécessaire
+          if (currentFilter === 'favorites') {
+            // Recharger l'affichage avec le filtre actif
+            const filteredGlasses = allGlasses.filter(g => g.favori === true);
+            displayGlasses(filteredGlasses);
+          }
+        } else {
+          showToast('Erreur lors de la mise à jour du favori', 'error');
+        }
+
+        // Réactiver le bouton
+        btn.removeAttribute('disabled');
+      });
+    });
+
+    // Gestion de la suppression
+    document.querySelectorAll('[data-delete]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const id = btn.getAttribute('data-delete');
+        if (id && confirm('Êtes-vous sûr de vouloir supprimer cette paire ?')) {
+          const result = await deleteLunettes(id);
+          if (result.success) {
+            // Retirer la carte du DOM
+            const card = document.querySelector(`[data-glass-id="${id}"]`);
+            if (card) card.remove();
+            
+            // Mettre à jour le tableau
+            allGlasses = allGlasses.filter(g => g.id !== id);
+            
+            // Vérifier si vide
+            if (allGlasses.length === 0) {
+              displayGlasses([]);
+            }
+            
+            showToast('Paire supprimée', 'success');
+          } else {
+            showToast('Erreur lors de la suppression', 'error');
+          }
+        }
+      });
+    });
+  }
+
+  // Fonction toast
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-top toast-end z-50';
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+    const icon = type === 'success' ? '✓' : '✗';
+    toast.innerHTML = `<div class="alert ${alertClass} shadow-lg"><span>${icon} ${message}</span></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Charger les lunettes au démarrage
+  async function loadGlasses() {
+    if (!isAuthenticated()) {
+      const loading = document.getElementById('loading');
+      const emptyState = document.getElementById('emptyState');
+      if (loading) loading.classList.add('hidden');
+      if (emptyState) {
+        emptyState.classList.remove('hidden');
+        emptyState.querySelector('h2')!.textContent = 'Vous devez être connecté';
+        emptyState.querySelector('p')!.textContent = 'Connectez-vous pour voir vos créations';
+        const btn = emptyState.querySelector('a');
+        if (btn) {
+          btn.href = '/connexion';
+          btn.textContent = 'Se connecter';
+        }
+      }
+      return;
+    }
+
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+
+    const result = await getUserLunettes(currentUser.id);
+    
+    if (result.success && result.data) {
+      allGlasses = result.data;
+      displayGlasses(allGlasses);
+    } else {
+      displayGlasses([]);
+    }
+  }
+
+  // Gestion des filtres
+  const filterButtons = document.querySelectorAll('[data-filter]');
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Retirer le style actif de tous les boutons
+      filterButtons.forEach(b => {
+        b.classList.remove('bg-[#2C3E50]', 'text-white');
+        b.classList.add('bg-transparent', 'text-[#2C3E50]', 'border', 'border-[#2C3E50]');
+      });
+      
+      // Ajouter le style actif au bouton cliqué
+      btn.classList.add('bg-[#2C3E50]', 'text-white');
+      btn.classList.remove('bg-transparent', 'text-[#2C3E50]', 'border', 'border-[#2C3E50]');
+
+      const filter = btn.getAttribute('data-filter');
+      currentFilter = filter || 'all';
+      
+      // Logique de filtrage
+      let filteredGlasses = [...allGlasses];
+      
+      if (filter === 'favorites') {
+        // Filtrer uniquement les favoris
+        filteredGlasses = allGlasses.filter(g => g.favori === true);
+        
+        if (filteredGlasses.length === 0) {
+          // Afficher un message si pas de favoris
+          const grid = document.getElementById('glassesGrid');
+          const emptyState = document.getElementById('emptyState');
+          
+          if (grid) grid.classList.add('hidden');
+          if (emptyState) {
+            emptyState.classList.remove('hidden');
+            const heading = emptyState.querySelector('h2');
+            const paragraph = emptyState.querySelector('p');
+            const button = emptyState.querySelector('a');
+            
+            if (heading) heading.textContent = 'Aucun favori pour le moment';
+            if (paragraph) paragraph.textContent = 'Ajoutez des lunettes à vos favoris en cliquant sur le cœur';
+            if (button) {
+              button.textContent = 'Voir toutes les lunettes';
+              button.href = '#';
+              button.onclick = (e) => {
+                e.preventDefault();
+                // Cliquer sur le filtre "Toutes"
+                const allBtn = document.querySelector('[data-filter="all"]') as HTMLElement;
+                allBtn?.click();
+              };
+            }
+          }
+          return;
+        }
+      } else if (filter === 'recent') {
+        // Trier par date de création (les plus récentes d'abord)
+        filteredGlasses = [...allGlasses].sort((a, b) => {
+          const dateA = new Date(a.created || a.date_creation).getTime();
+          const dateB = new Date(b.created || b.date_creation).getTime();
+          return dateB - dateA;
+        });
+        
+        // Limiter aux 6 plus récentes
+        filteredGlasses = filteredGlasses.slice(0, 6);
+      } else {
+        // Filtre "all" - trier par date décroissante
+        filteredGlasses = [...allGlasses].sort((a, b) => {
+          const dateA = new Date(a.created || a.date_creation).getTime();
+          const dateB = new Date(b.created || b.date_creation).getTime();
+          return dateB - dateA;
+        });
+      }
+      
+      displayGlasses(filteredGlasses);
+    });
+  });
+
+  // Charger au démarrage
+  window.addEventListener('load', loadGlasses);
+</script>

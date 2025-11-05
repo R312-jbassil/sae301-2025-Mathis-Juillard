@@ -19,7 +19,13 @@ import Layout from '../layouts/Layout.astro';
       <!-- Formulaire d'inscription -->
       <div class="card bg-base-100 shadow-xl rounded-2xl">
         <div class="card-body p-8">
-          <form class="space-y-5">
+          <!-- Message d'erreur -->
+          <div id="errorMessage" class="hidden alert alert-error mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span id="errorText"></span>
+          </div>
+
+          <form id="registerForm" class="space-y-5">
             <!-- Nom complet -->
             <div class="form-control">
               <label class="label">
@@ -27,6 +33,7 @@ import Layout from '../layouts/Layout.astro';
               </label>
               <input 
                 type="text" 
+                id="name"
                 placeholder="Jean Dupont" 
                 class="input input-bordered rounded-lg w-full" 
                 required
@@ -40,6 +47,7 @@ import Layout from '../layouts/Layout.astro';
               </label>
               <input 
                 type="email" 
+                id="email"
                 placeholder="votre@email.com" 
                 class="input input-bordered rounded-lg w-full" 
                 required
@@ -53,10 +61,15 @@ import Layout from '../layouts/Layout.astro';
               </label>
               <input 
                 type="password" 
+                id="password"
                 placeholder="••••••••" 
                 class="input input-bordered rounded-lg w-full" 
+                minlength="8"
                 required
               />
+              <label class="label">
+                <span class="label-text-alt text-gray-500">Minimum 8 caractères</span>
+              </label>
             </div>
 
             <!-- Confirmation mot de passe -->
@@ -66,6 +79,7 @@ import Layout from '../layouts/Layout.astro';
               </label>
               <input 
                 type="password" 
+                id="passwordConfirm"
                 placeholder="••••••••" 
                 class="input input-bordered rounded-lg w-full" 
                 required
@@ -75,7 +89,7 @@ import Layout from '../layouts/Layout.astro';
             <!-- Checkbox CGU -->
             <div class="form-control">
               <label class="label cursor-pointer justify-start gap-3">
-                <input type="checkbox" class="checkbox checkbox-primary" required />
+                <input type="checkbox" id="terms" class="checkbox checkbox-primary" required />
                 <span class="label-text text-sm">
                   J'accepte les <a href="#" class="link link-primary">conditions générales</a>
                 </span>
@@ -83,8 +97,9 @@ import Layout from '../layouts/Layout.astro';
             </div>
 
             <!-- Bouton d'inscription -->
-            <button type="submit" class="btn btn-primary w-full rounded-lg">
-              Créer mon compte
+            <button type="submit" id="submitBtn" class="btn btn-primary w-full rounded-lg">
+              <span id="btnText">Créer mon compte</span>
+              <span id="btnLoading" class="loading loading-spinner loading-sm hidden"></span>
             </button>
           </form>
 
@@ -113,3 +128,120 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 </Layout>
+
+<script>
+  import { register } from '../lib/pocketbase';
+
+  const form = document.getElementById('registerForm') as HTMLFormElement;
+  const nameInput = document.getElementById('name') as HTMLInputElement;
+  const emailInput = document.getElementById('email') as HTMLInputElement;
+  const passwordInput = document.getElementById('password') as HTMLInputElement;
+  const passwordConfirmInput = document.getElementById('passwordConfirm') as HTMLInputElement;
+  const termsCheckbox = document.getElementById('terms') as HTMLInputElement;
+  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+  const btnText = document.getElementById('btnText') as HTMLSpanElement;
+  const btnLoading = document.getElementById('btnLoading') as HTMLSpanElement;
+  const errorMessage = document.getElementById('errorMessage') as HTMLDivElement;
+  const errorText = document.getElementById('errorText') as HTMLSpanElement;
+
+  // Fonction pour afficher une erreur
+  function showError(message: string) {
+    errorText.textContent = message;
+    errorMessage.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Fonction pour masquer l'erreur
+  function hideError() {
+    errorMessage.classList.add('hidden');
+  }
+
+  // Gestion de la soumission du formulaire
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideError();
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const passwordConfirm = passwordConfirmInput.value;
+    const termsAccepted = termsCheckbox.checked;
+
+    // Validations
+    if (!name || !email || !password || !passwordConfirm) {
+      showError('Veuillez remplir tous les champs');
+      return;
+    }
+
+    if (password.length < 8) {
+      showError('Le mot de passe doit contenir au moins 8 caractères');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      showError('Les mots de passe ne correspondent pas');
+      return;
+    }
+
+    if (!termsAccepted) {
+      showError('Veuillez accepter les conditions générales');
+      return;
+    }
+
+    // Désactiver le bouton et afficher le loading
+    submitBtn.disabled = true;
+    btnText.classList.add('hidden');
+    btnLoading.classList.remove('hidden');
+
+    try {
+      // Appel à PocketBase
+      const result = await register(email, password, passwordConfirm, name);
+
+      if (result.success) {
+        // Succès - Afficher toast et rediriger
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-top toast-end z-50';
+        toast.innerHTML = `<div class="alert alert-success shadow-lg"><span>✓ Compte créé avec succès !</span></div>`;
+        document.body.appendChild(toast);
+
+        // Redirection après 1 seconde
+        setTimeout(() => {
+          window.location.href = '/personnalisation';
+        }, 1000);
+      } else {
+        // Erreur
+        let errorMsg = result.error || 'Erreur lors de la création du compte';
+        
+        // Messages d'erreur personnalisés
+        if (errorMsg.includes('email')) {
+          errorMsg = 'Cet email est déjà utilisé';
+        } else if (errorMsg.includes('password')) {
+          errorMsg = 'Le mot de passe ne respecte pas les critères requis';
+        }
+        
+        showError(errorMsg);
+        
+        // Réactiver le bouton
+        submitBtn.disabled = false;
+        btnText.classList.remove('hidden');
+        btnLoading.classList.add('hidden');
+      }
+    } catch (error) {
+      showError('Une erreur est survenue. Veuillez réessayer.');
+      
+      // Réactiver le bouton
+      submitBtn.disabled = false;
+      btnText.classList.remove('hidden');
+      btnLoading.classList.add('hidden');
+    }
+  });
+
+  // Validation en temps réel de la confirmation du mot de passe
+  passwordConfirmInput.addEventListener('input', () => {
+    if (passwordConfirmInput.value && passwordInput.value !== passwordConfirmInput.value) {
+      passwordConfirmInput.setCustomValidity('Les mots de passe ne correspondent pas');
+    } else {
+      passwordConfirmInput.setCustomValidity('');
+    }
+  });
+</script>

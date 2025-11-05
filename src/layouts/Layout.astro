@@ -46,9 +46,10 @@ const currentPath = Astro.url.pathname;
                 Mes lunettes
               </a>
             </li>
-            <li>
+            <li id="authSection">
               <a 
                 href="/connexion" 
+                id="authLink"
                 class={`text-sm font-medium transition-colors hover:text-primary ${currentPath === '/connexion' ? 'text-primary underline underline-offset-4' : 'text-base-content'}`}
               >
                 Mon compte
@@ -104,6 +105,8 @@ const currentPath = Astro.url.pathname;
     </footer>
 
     <script>
+      import { isAuthenticated, getCurrentUser, logout } from '../lib/pocketbase';
+
       // Gestion du compteur panier
       document.addEventListener('cart:updated', ((e: CustomEvent) => {
         const cartCount = document.getElementById('cartCount');
@@ -120,6 +123,45 @@ const currentPath = Astro.url.pathname;
           }
         }
       }) as EventListener);
+
+      // Gestion de l'authentification dans le header
+      document.addEventListener('DOMContentLoaded', () => {
+        const authSection = document.getElementById('authSection');
+        const authLink = document.getElementById('authLink');
+
+        if (isAuthenticated()) {
+          const user = getCurrentUser();
+          if (authLink && user) {
+            // Remplacer par un menu utilisateur
+            authSection!.innerHTML = `
+              <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn btn-ghost btn-sm normal-case">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span class="ml-2">${user.nom || user.email}</span>
+                </label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                  <li><a href="/mes-lunettes">Mes lunettes</a></li>
+                  <li><a href="/personnalisation">Personnaliser</a></li>
+                  <li><a href="/panier">Mon panier</a></li>
+                  <li class="border-t mt-2 pt-2"><a id="logoutBtn">Déconnexion</a></li>
+                </ul>
+              </div>
+            `;
+
+            // Ajouter l'événement de déconnexion
+            setTimeout(() => {
+              const logoutBtn = document.getElementById('logoutBtn');
+              logoutBtn?.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+                window.location.href = '/';
+              });
+            }, 100);
+          }
+        }
+      });
     </script>
   </body>
 </html>

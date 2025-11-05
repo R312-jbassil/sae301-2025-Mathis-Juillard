@@ -1,69 +1,58 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
+export const prerender = false; // Active le mode SSR pour cette page
+
 const { id } = Astro.params;
 ---
 
 <Layout title="Produit - TaVue">
   <div class="container mx-auto px-6 lg:px-12 py-12">
-    <!-- Breadcrumb -->
-    <div class="text-sm breadcrumbs mb-8">
-      <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/mes-lunettes">Mes lunettes</a></li>
-        <li>Épure Classique</li>
-      </ul>
+    <!-- État de chargement -->
+    <div id="loading" class="flex justify-center items-center py-20">
+      <div class="loading loading-spinner loading-lg text-primary"></div>
     </div>
 
-    <!-- Grille principale -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-      <!-- Image du produit -->
-      <div class="bg-base-200 rounded-3xl p-12 flex items-center justify-center min-h-[500px]">
-        <img src="/lunettes.svg" alt="Lunettes" class="w-full max-w-lg h-auto" />
+    <!-- Contenu principal (caché par défaut) -->
+    <div id="mainContent" class="hidden">
+      <!-- Breadcrumb -->
+      <div class="text-sm breadcrumbs mb-8">
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/mes-lunettes">Mes lunettes</a></li>
+          <li id="breadcrumbName">Chargement...</li>
+        </ul>
       </div>
 
-      <!-- Informations du produit -->
-      <div class="space-y-6">
-        <div>
-          <div class="badge badge-secondary mb-4">Personnalisé</div>
-          <h1 class="text-4xl font-playfair font-bold text-primary mb-2">
-            Épure Classique
-          </h1>
-          <p class="text-base-content/60">
-            Créé le 15 janvier 2025
-          </p>
+      <!-- Grille principale -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+        <!-- Image du produit -->
+        <div class="bg-base-200 rounded-3xl p-12 flex items-center justify-center min-h-[500px]">
+          <div id="svgContainer" class="w-full max-w-lg"></div>
         </div>
 
-        <!-- Caractéristiques -->
-        <div class="card bg-base-100 shadow-lg rounded-2xl p-6">
-          <h3 class="text-lg font-semibold mb-4">Caractéristiques</h3>
-          <div class="space-y-3 text-sm">
-            <div class="flex justify-between">
-              <span class="text-base-content/70">Matériau monture</span>
-              <span class="font-semibold">Acétate</span>
+        <!-- Informations du produit -->
+        <div class="space-y-6">
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="badge badge-secondary">Personnalisé</div>
+              <div id="favoriteBadge"></div>
             </div>
-            <div class="divider my-1"></div>
-            <div class="flex justify-between">
-              <span class="text-base-content/70">Couleur monture</span>
-              <span class="font-semibold">Noir</span>
-            </div>
-            <div class="divider my-1"></div>
-            <div class="flex justify-between">
-              <span class="text-base-content/70">Matériau branches</span>
-              <span class="font-semibold">Bois de noyer</span>
-            </div>
-            <div class="divider my-1"></div>
-            <div class="flex justify-between">
-              <span class="text-base-content/70">Largeur du pont</span>
-              <span class="font-semibold">18mm</span>
-            </div>
-            <div class="divider my-1"></div>
-            <div class="flex justify-between">
-              <span class="text-base-content/70">Taille des verres</span>
-              <span class="font-semibold">52mm</span>
+            <h1 id="productName" class="text-4xl font-playfair font-bold text-primary mb-2">
+              Chargement...
+            </h1>
+            <p id="productDate" class="text-base-content/60">
+              Chargement...
+            </p>
+          </div>
+
+          <!-- Caractéristiques -->
+          <div class="card bg-base-100 shadow-lg rounded-2xl p-6">
+            <h3 class="text-lg font-semibold mb-4">Caractéristiques</h3>
+            <div class="space-y-3 text-sm" id="characteristics">
+              <!-- Sera rempli dynamiquement -->
             </div>
           </div>
-        </div>
 
         <!-- Prix -->
         <div class="card bg-primary text-primary-content shadow-lg rounded-2xl p-6">
@@ -78,18 +67,21 @@ const { id } = Astro.params;
 
         <!-- Actions -->
         <div class="flex flex-col sm:flex-row gap-4">
-          <button class="btn btn-primary flex-1 rounded-lg">
+          <button id="addToCart" class="btn btn-primary flex-1 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
             </svg>
             Ajouter au panier
           </button>
-          <a href={`/personnalisation?id=${id}`} class="btn btn-outline flex-1 rounded-lg">
-            Modifier
-          </a>
+          <button id="favoriteBtn" class="btn btn-outline flex-1 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+            </svg>
+            <span id="favoriteBtnText">Ajouter aux favoris</span>
+          </button>
         </div>
 
-        <button class="btn btn-ghost btn-sm w-full text-error">
+        <button id="deleteBtn" class="btn btn-ghost btn-sm w-full text-error">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
           </svg>
@@ -97,68 +89,239 @@ const { id } = Astro.params;
         </button>
       </div>
     </div>
+    </div>
 
-    <!-- Modèles similaires -->
-    <section>
-      <h2 class="text-3xl font-playfair font-bold text-primary mb-8">
-        Modèles similaires
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Card 1 -->
-        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-          <figure class="bg-base-200 h-48 flex items-center justify-center p-6">
-            <img src="/lunettes.svg" alt="Lunettes" class="h-full w-auto" />
-          </figure>
-          <div class="card-body p-6">
-            <h3 class="card-title font-playfair text-primary">Moderne Doré</h3>
-            <p class="text-sm text-base-content/70">
-              Monture métal doré, branches acétate
-            </p>
-            <div class="card-actions justify-end mt-4">
-              <a href="/produit/2" class="btn btn-sm btn-primary rounded-lg">
-                Voir le modèle
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-          <figure class="bg-base-200 h-48 flex items-center justify-center p-6">
-            <img src="/lunettes.svg" alt="Lunettes" class="h-full w-auto" />
-          </figure>
-          <div class="card-body p-6">
-            <h3 class="card-title font-playfair text-primary">Minimaliste Acier</h3>
-            <p class="text-sm text-base-content/70">
-              Monture titane argenté, ultra-léger
-            </p>
-            <div class="card-actions justify-end mt-4">
-              <a href="/produit/3" class="btn btn-sm btn-primary rounded-lg">
-                Voir le modèle
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow rounded-2xl overflow-hidden">
-          <figure class="bg-base-200 h-48 flex items-center justify-center p-6">
-            <img src="/lunettes.svg" alt="Lunettes" class="h-full w-auto" />
-          </figure>
-          <div class="card-body p-6">
-            <h3 class="card-title font-playfair text-primary">Vintage Écaille</h3>
-            <p class="text-sm text-base-content/70">
-              Monture écaille de tortue, style rétro
-            </p>
-            <div class="card-actions justify-end mt-4">
-              <a href="/produit/4" class="btn btn-sm btn-primary rounded-lg">
-                Voir le modèle
-              </a>
-            </div>
-          </div>
+    <!-- Message d'erreur -->
+    <div id="errorState" class="hidden">
+      <div class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Erreur lors du chargement de la paire de lunettes.</span>
+        <div>
+          <a href="/mes-lunettes" class="btn btn-sm">Retour à mes lunettes</a>
         </div>
       </div>
-    </section>
+    </div>
+
   </div>
 </Layout>
+
+<script>
+  import { pb, getLunetteById, toggleFavori, deleteLunettes, isAuthenticated } from '../../lib/pocketbase';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const glassesId = window.location.pathname.split('/').pop();
+
+  let currentGlasses: any = null;
+
+  // Fonction pour formater la date
+  function formatDate(dateString: string) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  }
+
+  // Fonction pour afficher un toast
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const toast = document.createElement('div');
+    toast.className = 'toast toast-top toast-end z-50';
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+    const icon = type === 'success' ? '✓' : '✗';
+    toast.innerHTML = `<div class="alert ${alertClass} shadow-lg"><span>${icon} ${message}</span></div>`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // Charger les données de la paire
+  async function loadGlasses() {
+    if (!glassesId) {
+      showError();
+      return;
+    }
+
+    try {
+      const result = await getLunetteById(glassesId);
+
+      if (result.success && result.data) {
+        currentGlasses = result.data;
+        displayGlasses(currentGlasses);
+      } else {
+        showError();
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      showError();
+    }
+  }
+
+  // Afficher les données
+  function displayGlasses(glasses: any) {
+    // Masquer le loading
+    const loading = document.getElementById('loading');
+    const mainContent = document.getElementById('mainContent');
+    
+    if (loading) loading.classList.add('hidden');
+    if (mainContent) mainContent.classList.remove('hidden');
+
+    // Breadcrumb
+    const breadcrumbName = document.getElementById('breadcrumbName');
+    if (breadcrumbName) breadcrumbName.textContent = glasses.nom_modele || 'Sans nom';
+
+    // SVG
+    const svgContainer = document.getElementById('svgContainer');
+    if (svgContainer && glasses.svg_code) {
+      svgContainer.innerHTML = glasses.svg_code;
+    }
+
+    // Nom
+    const productName = document.getElementById('productName');
+    if (productName) productName.textContent = glasses.nom_modele || 'Sans nom';
+
+    // Date
+    const productDate = document.getElementById('productDate');
+    if (productDate) {
+      const dateStr = formatDate(glasses.created || glasses.date_creation);
+      productDate.textContent = `Créé le ${dateStr}`;
+    }
+
+    // Badge favori
+    const favoriteBadge = document.getElementById('favoriteBadge');
+    if (favoriteBadge && glasses.favori) {
+      favoriteBadge.innerHTML = '<div class="badge badge-error gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>Favori</div>';
+    }
+
+    // Caractéristiques
+    const characteristics = document.getElementById('characteristics');
+    if (characteristics) {
+      characteristics.innerHTML = `
+        <div class="flex justify-between">
+          <span class="text-base-content/70">Matériau monture</span>
+          <span class="font-semibold">${glasses.materiau_monture_nom || 'Acétate'}</span>
+        </div>
+        <div class="divider my-1"></div>
+        <div class="flex justify-between">
+          <span class="text-base-content/70">Matériau branches</span>
+          <span class="font-semibold">${glasses.materiau_branches_nom || 'Acétate'}</span>
+        </div>
+        <div class="divider my-1"></div>
+        <div class="flex justify-between">
+          <span class="text-base-content/70">Largeur du pont</span>
+          <span class="font-semibold">${glasses.largeur_pont || 18}mm</span>
+        </div>
+        <div class="divider my-1"></div>
+        <div class="flex justify-between">
+          <span class="text-base-content/70">Taille des verres</span>
+          <span class="font-semibold">${glasses.taille_verres || 52}mm</span>
+        </div>
+      `;
+    }
+
+    // Bouton favori
+    updateFavoriteButton(glasses.favori);
+
+    // Événements
+    attachEventListeners();
+  }
+
+  // Mettre à jour le bouton favori
+  function updateFavoriteButton(isFavorite: boolean) {
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const favoriteBtnText = document.getElementById('favoriteBtnText');
+    
+    if (favoriteBtn && favoriteBtnText) {
+      if (isFavorite) {
+        favoriteBtn.classList.add('btn-error');
+        favoriteBtn.classList.remove('btn-outline');
+        favoriteBtnText.textContent = 'Retirer des favoris';
+      } else {
+        favoriteBtn.classList.remove('btn-error');
+        favoriteBtn.classList.add('btn-outline');
+        favoriteBtnText.textContent = 'Ajouter aux favoris';
+      }
+    }
+  }
+
+  // Attacher les événements
+  function attachEventListeners() {
+    // Bouton favori
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    favoriteBtn?.addEventListener('click', async () => {
+      if (!currentGlasses) return;
+
+      const currentStatus = currentGlasses.favori || false;
+      const result = await toggleFavori(currentGlasses.id, currentStatus);
+
+      if (result.success) {
+        currentGlasses.favori = !currentStatus;
+        updateFavoriteButton(currentGlasses.favori);
+        
+        const favoriteBadge = document.getElementById('favoriteBadge');
+        if (currentGlasses.favori) {
+          showToast('Ajouté aux favoris', 'success');
+          if (favoriteBadge) {
+            favoriteBadge.innerHTML = '<div class="badge badge-error gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" /></svg>Favori</div>';
+          }
+        } else {
+          showToast('Retiré des favoris', 'success');
+          if (favoriteBadge) favoriteBadge.innerHTML = '';
+        }
+      } else {
+        showToast('Erreur lors de la mise à jour', 'error');
+      }
+    });
+
+    // Bouton supprimer
+    const deleteBtn = document.getElementById('deleteBtn');
+    deleteBtn?.addEventListener('click', async () => {
+      if (!currentGlasses) return;
+
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette paire de lunettes ?')) {
+        const result = await deleteLunettes(currentGlasses.id);
+
+        if (result.success) {
+          showToast('Paire supprimée', 'success');
+          setTimeout(() => {
+            window.location.href = '/mes-lunettes';
+          }, 1500);
+        } else {
+          showToast('Erreur lors de la suppression', 'error');
+        }
+      }
+    });
+
+    // Bouton ajouter au panier
+    const addToCartBtn = document.getElementById('addToCart');
+    addToCartBtn?.addEventListener('click', async () => {
+      if (!currentGlasses) return;
+
+      const { addToCart } = await import('../../lib/pocketbase');
+      const result = await addToCart(currentGlasses.id, 1, 150);
+
+      if (result.success) {
+        showToast('Ajouté au panier !', 'success');
+      } else {
+        showToast('Erreur lors de l\'ajout au panier', 'error');
+      }
+    });
+  }
+
+  // Afficher l'erreur
+  function showError() {
+    const loading = document.getElementById('loading');
+    const errorState = document.getElementById('errorState');
+    
+    if (loading) loading.classList.add('hidden');
+    if (errorState) errorState.classList.remove('hidden');
+  }
+
+  // Vérifier l'authentification et charger
+  if (!isAuthenticated()) {
+    window.location.href = '/connexion';
+  } else {
+    loadGlasses();
+  }
+</script>
