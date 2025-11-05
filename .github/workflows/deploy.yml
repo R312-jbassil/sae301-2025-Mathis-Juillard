@@ -1,40 +1,8 @@
-name: Build and Deploy to VPS
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-
-    - name: Install dependencies
-      run: npm ci
-      
     - name: Build project
       run: |
         npm run build
         cp package.json dist/server/
-    - name: Deploy to VPS via rsync
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22021
-        script: |
-          mkdir -p /var/www/sae-301/
-          
+
     - name: Copy files to VPS
       uses: appleboy/scp-action@v0.1.7
       with:
@@ -42,10 +10,11 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22021
-        source: "dist"
+        source: "dist/*, package.json"
         target: "/var/www/sae-301/"
         strip_components: 0
         overwrite: true
+
     - name: Install production dependencies on VPS
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -54,8 +23,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22021
         script: |
-          cd /var/www/sae-301/server
-          npm ci
+          cd /var/www/sae-301/dist/server
+          npm ci --omit=dev
           npm install astro
           npm install send server-destroy
           PORT=8088 pm2 restart sae-301 || PORT=8088 pm2 start entry.mjs --name sae-301
