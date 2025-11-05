@@ -470,6 +470,8 @@ import Layout from '../layouts/Layout.astro';
       const target = btn.getAttribute('data-target');
       const color = btn.getAttribute('data-color') || '#2D2926';
       
+      if (!target) return;
+      
       document.querySelectorAll(`.color-btn[data-target="${target}"]`).forEach(b => {
         b.classList.remove('ring-2', 'ring-primary', 'ring-offset-1');
       });
