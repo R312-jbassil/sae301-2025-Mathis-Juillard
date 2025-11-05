@@ -99,7 +99,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import { login, pb } from '../lib/pocketbase';
+  import pb from '../lib/pb';
 
   const form = document.getElementById('loginForm') as HTMLFormElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -113,52 +113,37 @@ import Layout from '../layouts/Layout.astro';
   const googleErrorMessage = document.getElementById('googleErrorMessage') as HTMLDivElement;
   const googleErrorText = document.getElementById('googleErrorText') as HTMLSpanElement;
 
-  // Fonction pour afficher une erreur
   function showError(message: string) {
     errorText.textContent = message;
     errorMessage.classList.remove('hidden');
   }
 
-  // Fonction pour masquer l'erreur
   function hideError() {
     errorMessage.classList.add('hidden');
   }
 
-  // Fonction pour afficher une erreur Google
   function showGoogleError(message: string) {
     googleErrorText.textContent = message;
     googleErrorMessage.classList.remove('hidden');
   }
 
-  // Fonction pour masquer l'erreur Google
   function hideGoogleError() {
     googleErrorMessage.classList.add('hidden');
   }
 
-  // Gestion de la connexion Google OAuth2
+  // Google OAuth2
   googleLoginBtn.addEventListener('click', async () => {
     hideGoogleError();
-    
     try {
       await pb.collection('users').authWithOAuth2({ provider: 'google' });
-      
-      // Succès - Afficher toast et rediriger
-      const toast = document.createElement('div');
-      toast.className = 'toast toast-top toast-end z-50';
-      toast.innerHTML = `<div class="alert alert-success shadow-lg"><span>✓ Connexion Google réussie !</span></div>`;
-      document.body.appendChild(toast);
-
-      // Redirection
-      setTimeout(() => {
-        window.location.href = '/personnalisation';
-      }, 1000);
+      window.location.href = '/personnalisation';
     } catch (err) {
       showGoogleError('Échec de connexion Google');
       console.error(err);
     }
   });
 
-  // Gestion de la soumission du formulaire
+  // Connexion classique via API
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     hideError();
@@ -166,45 +151,34 @@ import Layout from '../layouts/Layout.astro';
     const email = emailInput.value.trim();
     const password = passwordInput.value;
 
-    // Validation basique
     if (!email || !password) {
       showError('Veuillez remplir tous les champs');
       return;
     }
 
-    // Désactiver le bouton et afficher le loading
     submitBtn.disabled = true;
     btnText.classList.add('hidden');
     btnLoading.classList.remove('hidden');
 
     try {
-      // Appel à PocketBase
-      const result = await login(email, password);
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (result.success) {
-        // Succès - Afficher toast et rediriger
-        const toast = document.createElement('div');
-        toast.className = 'toast toast-top toast-end z-50';
-        toast.innerHTML = `<div class="alert alert-success shadow-lg"><span>✓ Connexion réussie !</span></div>`;
-        document.body.appendChild(toast);
+      const data = await res.json();
 
-        // Redirection après 1 seconde
-        setTimeout(() => {
-          window.location.href = '/personnalisation';
-        }, 1000);
+      if (res.ok) {
+        window.location.href = '/personnalisation';
       } else {
-        // Erreur
-        showError(result.error || 'Email ou mot de passe incorrect');
-        
-        // Réactiver le bouton
+        showError(data.error || 'Email ou mot de passe incorrect');
         submitBtn.disabled = false;
         btnText.classList.remove('hidden');
         btnLoading.classList.add('hidden');
       }
     } catch (error) {
       showError('Une erreur est survenue. Veuillez réessayer.');
-      
-      // Réactiver le bouton
       submitBtn.disabled = false;
       btnText.classList.remove('hidden');
       btnLoading.classList.add('hidden');

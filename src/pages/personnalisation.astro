@@ -48,6 +48,46 @@ import Layout from '../layouts/Layout.astro';
         <!-- Colonne droite : Formulaire -->
         <div class="py-12 px-10">
           <div class="max-w-[560px]">
+            
+            <!-- Section Génération IA -->
+            <div class="card bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 shadow-lg mb-8">
+              <div class="card-body p-6">
+                <div class="flex items-center gap-3 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <h2 class="font-playfair text-2xl font-bold text-primary">Génération IA</h2>
+                </div>
+                
+                <p class="text-sm text-base-content/70 mb-4 font-manrope">
+                  Décrivez la paire de lunettes de vos rêves et l'IA la créera pour vous !
+                </p>
+
+                <textarea 
+                  id="aiPrompt" 
+                  class="textarea textarea-bordered w-full min-h-24 font-manrope text-sm" 
+                  placeholder="Ex: Des lunettes rondes vintage en métal doré avec des branches fines et élégantes..."
+                ></textarea>
+
+                <div id="aiAlert" class="hidden mt-3"></div>
+
+                <div class="flex gap-3 mt-4">
+                  <button id="generateBtn" class="btn btn-primary flex-1 font-manrope">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                    </svg>
+                    Générer
+                  </button>
+                  <button id="editBtn" class="btn btn-outline btn-primary font-manrope" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Modifier
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Titre -->
             <h1 class="font-playfair text-[42px] font-bold text-primary leading-tight mb-10">
               Personnalisez vos lunettes
@@ -175,18 +215,6 @@ import Layout from '../layouts/Layout.astro';
                 />
               </div>
 
-              <!-- Description -->
-              <div>
-                <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
-                  Décrivez vos lunettes
-                </h3>
-                <textarea 
-                  class="textarea textarea-bordered w-full rounded-lg h-24 font-manrope text-xs resize-none" 
-                  placeholder="Ici, écrivez la description de vos lunettes pour que l'IA puisse les générer"
-                  id="description"
-                ></textarea>
-              </div>
-
               <!-- Nom du modèle -->
               <div>
                 <h3 class="font-manrope text-[11px] font-semibold text-base-content uppercase tracking-wider mb-3">
@@ -200,13 +228,10 @@ import Layout from '../layouts/Layout.astro';
                 />
               </div>
 
-              <!-- Boutons -->
-              <div class="grid grid-cols-2 gap-4 pt-2">
-                <button class="btn bg-secondary hover:bg-secondary/90 text-secondary-content border-0 h-11 rounded-lg font-manrope font-medium text-xs normal-case shadow-sm">
-                  Générer avec l'IA
-                </button>
-                <button class="btn bg-[#2C3E50] hover:bg-[#2C3E50]/90 text-white border-0 h-11 rounded-lg font-manrope font-medium text-sm normal-case shadow-sm" id="saveGlasses">
-                  Sauvegarder ma paire
+              <!-- Bouton Sauvegarder -->
+              <div class="pt-2">
+                <button class="btn btn-primary w-full h-11 rounded-lg font-manrope font-medium text-sm normal-case shadow-sm" id="saveGlasses">
+                  💾 Sauvegarder ma paire
                 </button>
               </div>
             </div>
@@ -569,4 +594,161 @@ import Layout from '../layouts/Layout.astro';
     loadSVG();
     loadMateriaux();
   });
+
+  // ============ GÉNÉRATION IA ============
+
+  let promptHistory: Array<{role: string, content: string}> = [];
+  
+  const aiPromptInput = document.getElementById('aiPrompt') as HTMLTextAreaElement;
+  const generateBtn = document.getElementById('generateBtn') as HTMLButtonElement;
+  const editBtn = document.getElementById('editBtn') as HTMLButtonElement;
+  const aiAlert = document.getElementById('aiAlert') as HTMLDivElement;
+
+  function showAIAlert(type: 'info' | 'success' | 'error' | 'warning', message: string) {
+    aiAlert.className = `alert alert-${type} text-sm font-manrope`;
+    aiAlert.textContent = message;
+    aiAlert.classList.remove('hidden');
+  }
+
+  function hideAIAlert() {
+    aiAlert.classList.add('hidden');
+  }
+
+  async function callGenerateGlasses(messages: Array<{role: string, content: string}>) {
+    const res = await fetch('/api/generateGlasses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(messages),
+    });
+    const data = await res.json(); // { svg: {role, content} } ou {error}
+    if (!res.ok) throw new Error(data?.error || 'Erreur API');
+    return data.svg; // {role:'assistant', content:'<svg...'}
+  }
+
+  async function handleGenerate() {
+    const prompt = aiPromptInput.value.trim();
+    if (!prompt) {
+      showAIAlert('warning', 'Décrivez d\'abord votre paire de lunettes.');
+      return;
+    }
+
+    showAIAlert('info', '🎨 Génération en cours...');
+    generateBtn.disabled = true;
+    editBtn.disabled = true;
+
+    try {
+      // Réinitialiser l'historique
+      promptHistory = [];
+      promptHistory.push({ role: 'user', content: prompt });
+
+      const aiMsg = await callGenerateGlasses(promptHistory);
+      const match = aiMsg.content.match(/<svg[\s\S]*?<\/svg>/i);
+      aiMsg.content = match ? match[0] : '';
+
+      if (!aiMsg.content) {
+        throw new Error('Aucun SVG généré');
+      }
+
+      promptHistory.push(aiMsg);
+
+      // Injecter le SVG dans le preview
+      const svgContainer = document.getElementById('svgContainer');
+      if (svgContainer) {
+        svgContainer.innerHTML = aiMsg.content;
+        
+        // Mettre à jour les couleurs avec les valeurs actuelles
+        const svg = svgContainer.querySelector('svg');
+        if (svg) {
+          applyCurrentColors(svg);
+        }
+      }
+
+      showAIAlert('success', '✅ Lunettes générées ! Vous pouvez maintenant les personnaliser.');
+      editBtn.disabled = false;
+      
+      // Vider le champ pour la prochaine modification
+      aiPromptInput.value = '';
+    } catch (e: any) {
+      console.error(e);
+      showAIAlert('error', e.message || 'Erreur lors de la génération');
+    } finally {
+      generateBtn.disabled = false;
+    }
+  }
+
+  async function handleEdit() {
+    const prompt = aiPromptInput.value.trim();
+    if (!prompt) {
+      showAIAlert('warning', 'Décrivez les modifications souhaitées.');
+      return;
+    }
+
+    showAIAlert('info', '✏️ Modification en cours...');
+    generateBtn.disabled = true;
+    editBtn.disabled = true;
+
+    try {
+      promptHistory.push({ role: 'user', content: prompt });
+
+      const aiMsg = await callGenerateGlasses(promptHistory);
+      const match = aiMsg.content.match(/<svg[\s\S]*?<\/svg>/i);
+      aiMsg.content = match ? match[0] : '';
+
+      if (!aiMsg.content) {
+        throw new Error('Aucun SVG généré');
+      }
+
+      promptHistory.push(aiMsg);
+
+      // Injecter le SVG
+      const svgContainer = document.getElementById('svgContainer');
+      if (svgContainer) {
+        svgContainer.innerHTML = aiMsg.content;
+        
+        // Appliquer les couleurs actuelles
+        const svg = svgContainer.querySelector('svg');
+        if (svg) {
+          applyCurrentColors(svg);
+        }
+      }
+
+      showAIAlert('success', '✅ Lunettes modifiées !');
+      
+      // Vider le champ
+      aiPromptInput.value = '';
+    } catch (e: any) {
+      console.error(e);
+      showAIAlert('error', e.message || 'Erreur lors de la modification');
+    } finally {
+      generateBtn.disabled = false;
+      editBtn.disabled = false;
+    }
+  }
+
+  // Fonction pour appliquer les couleurs actuelles au SVG généré
+  function applyCurrentColors(svg: SVGElement) {
+    // Appliquer les couleurs de monture
+    const frameElements = svg.querySelectorAll('[id*="frame"], [id*="bridge"]');
+    frameElements.forEach(el => {
+      (el as SVGElement).style.fill = currentFrameColor;
+      (el as SVGElement).style.stroke = currentFrameColor;
+    });
+
+    // Appliquer les couleurs de branches
+    const templeElements = svg.querySelectorAll('[id*="temple"]');
+    templeElements.forEach(el => {
+      (el as SVGElement).style.fill = currentTempleColor;
+      (el as SVGElement).style.stroke = currentTempleColor;
+    });
+
+    // Appliquer les couleurs de verres
+    const lensElements = svg.querySelectorAll('[id*="lens"]');
+    lensElements.forEach(el => {
+      (el as SVGElement).style.fill = currentLensColor;
+      (el as SVGElement).style.opacity = '0.3';
+    });
+  }
+
+  generateBtn?.addEventListener('click', handleGenerate);
+  editBtn?.addEventListener('click', handleEdit);
 </script>

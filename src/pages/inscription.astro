@@ -130,8 +130,6 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import { register } from '../lib/pocketbase';
-
   const form = document.getElementById('registerForm') as HTMLFormElement;
   const nameInput = document.getElementById('name') as HTMLInputElement;
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -194,25 +192,20 @@ import Layout from '../layouts/Layout.astro';
     btnLoading.classList.remove('hidden');
 
     try {
-      // Appel à PocketBase
-      const result = await register(email, password, passwordConfirm, name);
+      // Appel à l'API signup
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-      if (result.success) {
-        // Succès - Afficher toast et rediriger
-        const toast = document.createElement('div');
-        toast.className = 'toast toast-top toast-end z-50';
-        toast.innerHTML = `<div class="alert alert-success shadow-lg"><span>✓ Compte créé avec succès !</span></div>`;
-        document.body.appendChild(toast);
+      const data = await res.json();
 
-        // Redirection après 1 seconde
-        setTimeout(() => {
-          window.location.href = '/personnalisation';
-        }, 1000);
+      if (res.ok) {
+        window.location.href = '/personnalisation';
       } else {
-        // Erreur
-        let errorMsg = result.error || 'Erreur lors de la création du compte';
+        let errorMsg = data.error || 'Erreur lors de la création du compte';
         
-        // Messages d'erreur personnalisés
         if (errorMsg.includes('email')) {
           errorMsg = 'Cet email est déjà utilisé';
         } else if (errorMsg.includes('password')) {
@@ -220,16 +213,12 @@ import Layout from '../layouts/Layout.astro';
         }
         
         showError(errorMsg);
-        
-        // Réactiver le bouton
         submitBtn.disabled = false;
         btnText.classList.remove('hidden');
         btnLoading.classList.add('hidden');
       }
     } catch (error) {
       showError('Une erreur est survenue. Veuillez réessayer.');
-      
-      // Réactiver le bouton
       submitBtn.disabled = false;
       btnText.classList.remove('hidden');
       btnLoading.classList.add('hidden');
