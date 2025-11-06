@@ -134,12 +134,25 @@ import Layout from '../layouts/Layout.astro';
   // --- Connexion via Google ---
   googleLoginBtn.addEventListener('click', async () => {
     hideGoogleError();
+    googleLoginBtn.disabled = true;
+    
     try {
-      await pb.collection('users').authWithOAuth2({ provider: 'google' });
+      // Lancer le flux OAuth2 avec Google
+      const authData = await pb.collection('users').authWithOAuth2({
+        provider: 'google',
+        createData: {
+          emailVisibility: true,
+        }
+      });
+      
+      console.log('Google auth successful:', authData);
+      
+      // Redirection après connexion réussie
       window.location.href = '/personnalisation';
-    } catch (err) {
-      showGoogleError('Échec de connexion Google');
-      console.error(err);
+    } catch (err: any) {
+      console.error('Google OAuth error:', err);
+      showGoogleError(err?.message || 'Échec de connexion Google. Vérifiez la configuration OAuth dans PocketBase.');
+      googleLoginBtn.disabled = false;
     }
   });
 

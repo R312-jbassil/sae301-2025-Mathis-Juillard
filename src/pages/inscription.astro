@@ -106,7 +106,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="divider">OU</div>
 
           <!-- Connexion Google -->
-          <button class="btn btn-outline w-full rounded-lg gap-2">
+          <button id="googleSignup" type="button" class="btn btn-outline w-full rounded-lg gap-2">
             <svg class="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -115,6 +115,12 @@ import Layout from '../layouts/Layout.astro';
             </svg>
             S'inscrire avec Google
           </button>
+
+          <!-- Message d'erreur Google -->
+          <div id="googleErrorMessage" class="hidden alert alert-error mt-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <span id="googleErrorText"></span>
+          </div>
 
           <!-- Lien connexion -->
           <p class="text-center text-sm text-base-content/70 mt-6">
@@ -143,6 +149,9 @@ import Layout from '../layouts/Layout.astro';
   const btnLoading = document.getElementById('btnLoading') as HTMLSpanElement;
   const errorMessage = document.getElementById('errorMessage') as HTMLDivElement;
   const errorText = document.getElementById('errorText') as HTMLSpanElement;
+  const googleSignupBtn = document.getElementById('googleSignup') as HTMLButtonElement;
+  const googleErrorMessage = document.getElementById('googleErrorMessage') as HTMLDivElement;
+  const googleErrorText = document.getElementById('googleErrorText') as HTMLSpanElement;
 
   // Fonction pour afficher une erreur
   function showError(message: string) {
@@ -155,6 +164,42 @@ import Layout from '../layouts/Layout.astro';
   function hideError() {
     errorMessage.classList.add('hidden');
   }
+
+  // Fonction pour afficher une erreur Google
+  function showGoogleError(message: string) {
+    googleErrorText.textContent = message;
+    googleErrorMessage.classList.remove('hidden');
+  }
+
+  // Fonction pour masquer l'erreur Google
+  function hideGoogleError() {
+    googleErrorMessage.classList.add('hidden');
+  }
+
+  // --- Inscription via Google ---
+  googleSignupBtn.addEventListener('click', async () => {
+    hideGoogleError();
+    googleSignupBtn.disabled = true;
+    
+    try {
+      // Lancer le flux OAuth2 avec Google
+      const authData = await pb.collection('users').authWithOAuth2({
+        provider: 'google',
+        createData: {
+          emailVisibility: true,
+        }
+      });
+      
+      console.log('Google signup successful:', authData);
+      
+      // Redirection après inscription réussie
+      window.location.href = '/personnalisation';
+    } catch (err: any) {
+      console.error('Google OAuth error:', err);
+      showGoogleError(err?.message || 'Échec d\'inscription Google. Vérifiez la configuration OAuth dans PocketBase.');
+      googleSignupBtn.disabled = false;
+    }
+  });
 
   // Gestion de la soumission du formulaire
   form.onsubmit = async (e) => {
