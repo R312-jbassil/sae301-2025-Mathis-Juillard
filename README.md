@@ -24,5 +24,3 @@ Le site Astro est opérationnel et entièrement responsive.
 PocketBase gère bien les utilisateurs, les commandes et les vues.
 
 Les SVG se génèrent et s’affichent sans erreur.
-
-Ma 
